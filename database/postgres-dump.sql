@@ -127,7 +127,7 @@ ALTER TABLE holiday_maker_schema.bookings_join_rooms OWNER TO postgres;
 
 CREATE TABLE holiday_maker_schema.customers (
     customer_id integer NOT NULL,
-    column_name text,
+    name text,
     email text,
     phone_number integer,
     birthyear integer
@@ -137,10 +137,10 @@ CREATE TABLE holiday_maker_schema.customers (
 ALTER TABLE holiday_maker_schema.customers OWNER TO postgres;
 
 --
--- Name: COLUMN customers.column_name; Type: COMMENT; Schema: holiday_maker_schema; Owner: postgres
+-- Name: COLUMN customers.name; Type: COMMENT; Schema: holiday_maker_schema; Owner: postgres
 --
 
-COMMENT ON COLUMN holiday_maker_schema.customers.column_name IS 'name';
+COMMENT ON COLUMN holiday_maker_schema.customers.name IS 'name';
 
 
 --
@@ -304,7 +304,7 @@ COPY holiday_maker_schema.bookings_join_rooms (rooms_fk, booking_fk) FROM stdin;
 -- Data for Name: customers; Type: TABLE DATA; Schema: holiday_maker_schema; Owner: postgres
 --
 
-COPY holiday_maker_schema.customers (customer_id, column_name, email, phone_number, birthyear) FROM stdin;
+COPY holiday_maker_schema.customers (customer_id, name, email, phone_number, birthyear) FROM stdin;
 \.
 
 
