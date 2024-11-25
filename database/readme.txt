@@ -1,3 +1,5 @@
+------import db-----------
+
 right click database -> import/export -> restore with "pg_restore/psql"
 
 path to executable default "C:/Program Files/PostgreSQL/16/bin/psql.exe"
@@ -6,3 +8,5 @@ run
 
 click on number next to database and check the box holiday_maker_schema
 
+------import data----------
+right click table -> import/export -> import data from file(s)

@@ -129,7 +129,7 @@ CREATE TABLE holiday_maker_schema.customers (
     customer_id integer NOT NULL,
     name text,
     email text,
-    phone_number integer,
+    phone_number text,
     birthyear integer
 );
 
@@ -193,7 +193,7 @@ ALTER TABLE holiday_maker_schema.hotel_features ALTER COLUMN hotel_features_id A
 CREATE TABLE holiday_maker_schema.hotels (
     hotel_id integer NOT NULL,
     street_name text,
-    postal_code integer,
+    postal_code text,
     city text,
     region text,
     country text,
