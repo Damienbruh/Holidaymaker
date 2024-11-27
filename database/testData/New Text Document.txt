@@ -1,0 +1,5 @@
+\i pg_dump -U postgres holiday_maker > <file_path>.sql
+\! psql -U postgres -f <repo>\database\holiday_maker-dump-clean.sql holiday_maker
+\copy customers FROM C:\holidayPlanner\holidaymaker\database\testData\CUSTOMERS.csv WITH (FORMAT CSV, HEADER true, DELIMITER ',');
+
+

@@ -16,29 +16,37 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-DROP DATABASE IF EXISTS holiday_maker;
---
--- Name: holiday_maker; Type: DATABASE; Schema: -; Owner: postgres
---
-
-CREATE DATABASE holiday_maker WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'English_Sweden.1252';
-
-
-ALTER DATABASE holiday_maker OWNER TO postgres;
-
-\connect holiday_maker
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
+ALTER TABLE IF EXISTS ONLY public.rooms DROP CONSTRAINT IF EXISTS rooms_hotels_hotel_id_fk;
+ALTER TABLE IF EXISTS ONLY public.hotels_join_features DROP CONSTRAINT IF EXISTS hotels_join_features_hotels_hotel_id_fk;
+ALTER TABLE IF EXISTS ONLY public.hotels_join_features DROP CONSTRAINT IF EXISTS hotels_join_features_hotel_features_hotel_features_id_fk;
+ALTER TABLE IF EXISTS ONLY public.bookings_join_rooms DROP CONSTRAINT IF EXISTS bookings_join_rooms_rooms_room_id_fk;
+ALTER TABLE IF EXISTS ONLY public.bookings_join_rooms DROP CONSTRAINT IF EXISTS bookings_join_rooms_bookings_bookings_id_fk;
+ALTER TABLE IF EXISTS ONLY public.bookings_join_customer DROP CONSTRAINT IF EXISTS bookings_join_customer_customers_customer_id_fk;
+ALTER TABLE IF EXISTS ONLY public.bookings_join_customer DROP CONSTRAINT IF EXISTS bookings_join_customer_bookings_bookings_id_fk;
+ALTER TABLE IF EXISTS ONLY public.bookings_join_addons DROP CONSTRAINT IF EXISTS bookings_join_addons_bookings_bookings_id_fk;
+ALTER TABLE IF EXISTS ONLY public.bookings_join_addons DROP CONSTRAINT IF EXISTS bookings_join_addons_addons_addons_id_fk;
+ALTER TABLE IF EXISTS ONLY public.addons DROP CONSTRAINT IF EXISTS addons_hotels_hotel_id_fk;
+ALTER TABLE IF EXISTS ONLY public.rooms DROP CONSTRAINT IF EXISTS rooms_pk;
+ALTER TABLE IF EXISTS ONLY public.hotels DROP CONSTRAINT IF EXISTS hotels_pk;
+ALTER TABLE IF EXISTS ONLY public.hotels_join_features DROP CONSTRAINT IF EXISTS hotels_join_features_pk;
+ALTER TABLE IF EXISTS ONLY public.hotel_features DROP CONSTRAINT IF EXISTS hotel_features_pk;
+ALTER TABLE IF EXISTS ONLY public.customers DROP CONSTRAINT IF EXISTS customers_pk;
+ALTER TABLE IF EXISTS ONLY public.bookings DROP CONSTRAINT IF EXISTS bookings_pk;
+ALTER TABLE IF EXISTS ONLY public.bookings_join_rooms DROP CONSTRAINT IF EXISTS bookings_join_rooms_pk;
+ALTER TABLE IF EXISTS ONLY public.bookings_join_customer DROP CONSTRAINT IF EXISTS bookings_join_customer_pk;
+ALTER TABLE IF EXISTS ONLY public.bookings_join_addons DROP CONSTRAINT IF EXISTS bookings_join_addons_pk;
+ALTER TABLE IF EXISTS ONLY public.addons DROP CONSTRAINT IF EXISTS addons_pk;
+DROP TABLE IF EXISTS public.rooms;
+DROP TABLE IF EXISTS public.hotels_join_features;
+DROP TABLE IF EXISTS public.hotels;
+DROP TABLE IF EXISTS public.hotel_features;
+DROP TABLE IF EXISTS public.customers;
+DROP TABLE IF EXISTS public.bookings_join_rooms;
+DROP TABLE IF EXISTS public.bookings_join_customer;
+DROP TABLE IF EXISTS public.bookings_join_addons;
+DROP TABLE IF EXISTS public.bookings;
+DROP TABLE IF EXISTS public.addons;
+-- *not* dropping schema, since initdb creates it
 --
 -- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
 --
