@@ -1,18 +1,19 @@
-﻿using System;
-using System.Runtime.Intrinsics.Arm;
-using System.Collections.Generic;
-
+﻿
 namespace app;
 
 
 class Program
 {
-    static void Main(string[] args)
+    static void Main()
     {
-        Program program = new Program();
-        program.loginMenu();
+        Database db = new();
+        TestQueries queries = new(db.Connection());
+        
+        queries.AllCustomers();
+        //program.loginMenu();
+        
     }
-    public void loginMenu()
+    /*public void loginMenu()
     {
         Console.WriteLine("Login with Username and Password!");
     
@@ -33,6 +34,8 @@ class Program
             {
                 Console.WriteLine("\nCorrect credentials! You are now logged in!");
                 isLoggedIn = true;
+                
+
             }
             else
             {
@@ -45,8 +48,9 @@ class Program
         {
             return username == correctUsername && password == correctPassword;
         }
+        
     
-    }
+    }*/
 }
 
 
