@@ -45,6 +45,7 @@ public class Menu
                 {
                     Console.WriteLine(options);
                 }
+                GetInput();
                 break;
             case MenuStateEnum.ViewBookings:
                 break;
@@ -55,6 +56,32 @@ public class Menu
             case MenuStateEnum.ManageCustomers:
                 break;
         }   
+    }
+
+    private void GetInput()
+    {
+        string? response = Console.ReadLine();
+        if (String.IsNullOrEmpty(response)) 
+        {
+            
+        }
+        
+        switch (_menuState)
+        {
+            case MenuStateEnum.LoggedOut:
+                break;
+            case MenuStateEnum.Main:
+                
+                break;
+            case MenuStateEnum.ViewBookings:
+                break;
+            case MenuStateEnum.CreateBookings:
+                break;
+            case MenuStateEnum.ViewCustomers:
+                break;
+            case MenuStateEnum.ManageCustomers:
+                break;
+        } 
     }
 
     
