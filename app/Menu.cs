@@ -2,6 +2,7 @@ using app.Queries;
 namespace app;
 public class Menu
 {
+    //här specifierar vi vilka olika states meny kan vara i
     enum MenuStateEnum
     {
         LoggedOut,
@@ -12,6 +13,7 @@ public class Menu
         ManageCustomers,
     }
 
+    //här specifierar vi vad varje menystate ska visa
     private readonly Dictionary<MenuStateEnum, String[]> _menuOptions = new()
     {
         //{ MenuStateEnum.LoggedOut, new []{""} },
@@ -29,6 +31,7 @@ public class Menu
 
     public Menu(QueryHandler queryHandler)
     {
+        //här lägger vi till vilken function som skall callas vid vilket state, viktigt att functionen är en async task. skall leta efter bättre lösning
         _menuHandlers = new Dictionary<MenuStateEnum, Func<Task>>
         {
             { MenuStateEnum.LoggedOut, HandleLoggedOutMenu},
@@ -172,101 +175,6 @@ public class Menu
                 break;
         }
     }
-    
-
-
-    //refactorio time
-    // private string[] _menuOptionsMain = {"1. view bookings","2. create new booking", "3. customer management","4. logOut","5. quit"};
-    // private string[] _menuOptionsViewCustomer = {"1. view all customers","2. view customer by id", "3. view customer by name","4. return"};
-    //
-    // private string _optionMessage = "please select what you want to do by typing the number associated";
-    //
-    // enum MenuStateEnum
-    // {
-    //     LoggedOut,
-    //     Main,
-    //     ViewBookings,
-    //     CreateBookings,
-    //     ViewCustomers,
-    //     ManageCustomers,
-    // }
-    //
-    // private bool _clearBeforeMenu = true;
-    // private MenuStateEnum _menuState = MenuStateEnum.LoggedOut;
-    //
-    // private QueryHandler _queryHandler;
-    // public Menu(QueryHandler queryHandler)
-    // {
-    //     _queryHandler = queryHandler;
-    //     //_queryHandler.AllCustomersTest();
-    //     PrintMenu();
-    // }
-    //
-    // private void PrintMenu()
-    // {
-    //     if(_clearBeforeMenu)Console.Clear();
-    //     switch (_menuState)
-    //     {
-    //         case MenuStateEnum.LoggedOut:
-    //             if (VerifyLogIn())
-    //             {
-    //                 _menuState = MenuStateEnum.Main;
-    //                 PrintMenu();
-    //             }
-    //             break;
-    //         case MenuStateEnum.Main:
-    //             Console.WriteLine(_optionMessage);
-    //             foreach (string options in _menuOptionsMain)
-    //             {
-    //                 Console.WriteLine(options);
-    //             }
-    //             GetInput();
-    //             break;
-    //         case MenuStateEnum.ViewBookings:
-    //             break;
-    //         case MenuStateEnum.CreateBookings:
-    //             break;
-    //         case MenuStateEnum.ViewCustomers:
-    //             foreach (string options in _menuOptionsViewCustomer)
-    //             {
-    //                 Console.WriteLine(options);
-    //             }
-    //             break;
-    //         case MenuStateEnum.ManageCustomers:
-    //             break;
-    //     }   
-    // }
-    //
-    // private void GetInput()
-    // {
-    //     string? response = Console.ReadLine();
-    //
-    //     while (String.IsNullOrEmpty(response))
-    //     {
-    //         Console.WriteLine("invalid option try again");
-    //         response = Console.ReadLine();
-    //     }
-    //     
-    //     //for (string? response  = Console.ReadLine(); String.IsNullOrEmpty(response); response = Console.ReadLine()); accursed one liner
-    //     
-    //         
-    //     switch (_menuState)
-    //     {
-    //         case MenuStateEnum.LoggedOut:
-    //             break;
-    //         case MenuStateEnum.Main:
-    //             
-    //             break;
-    //         case MenuStateEnum.ViewBookings:
-    //             break;
-    //         case MenuStateEnum.CreateBookings:
-    //             break;
-    //         case MenuStateEnum.ViewCustomers:
-    //             break;
-    //         case MenuStateEnum.ManageCustomers:
-    //             break;
-    //     } 
-    // }
 
     private void VerifyLogIn()
     {
