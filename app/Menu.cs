@@ -37,6 +37,7 @@ public class Menu
                 }
                 break;
             case MenuStateEnum.Main:
+                
                 break;
             case MenuStateEnum.ViewBookings:
                 break;
