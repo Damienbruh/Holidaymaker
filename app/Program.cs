@@ -1,5 +1,7 @@
-﻿namespace app;
-using app.Queries;
+﻿using app.Queries;
+
+namespace app;
+
 
 class Program
 {
