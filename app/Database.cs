@@ -1,6 +1,5 @@
 ﻿using Npgsql;
 
-
 namespace app
 {
     public class Database
@@ -8,7 +7,7 @@ namespace app
         private readonly string _host = "localhost";
         private readonly string _port = "5432";
         private readonly string _username = "postgres";
-        private readonly string _password = "nononono"; 
+        private readonly string _password = "";
         private readonly string _database = "holiday_maker";
 
         private NpgsqlDataSource _connection;
