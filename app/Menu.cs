@@ -6,6 +6,8 @@ public class Menu
 {
     private string[] _menuOptionsMain = {"1. view bookings","2. create new booking", "3. customer management","4. logOut","5. quit"};
 
+    private string _optionMessage = "please select what you want to do by typing the number associated";
+
     enum MenuStateEnum
     {
         LoggedOut,
@@ -22,7 +24,7 @@ public class Menu
     public Menu(QueryHandler queryHandler)
     {
         _queryHandler = queryHandler;
-        _queryHandler.AllCustomersTest();
+        //_queryHandler.AllCustomersTest();
         PrintMenu();
     }
 
@@ -31,13 +33,18 @@ public class Menu
         switch (_menuState)
         {
             case MenuStateEnum.LoggedOut:
-                if (verifyLogIn())
+                if (VerifyLogIn())
                 {
                     _menuState = MenuStateEnum.Main;
+                    PrintMenu();
                 }
                 break;
             case MenuStateEnum.Main:
-                
+                Console.WriteLine(_optionMessage);
+                foreach (string options in _menuOptionsMain)
+                {
+                    Console.WriteLine(options);
+                }
                 break;
             case MenuStateEnum.ViewBookings:
                 break;
@@ -48,13 +55,12 @@ public class Menu
             case MenuStateEnum.ManageCustomers:
                 break;
         }   
-        PrintMenu();
     }
 
     
     
     
-    private bool verifyLogIn()
+    private bool VerifyLogIn()
     {
         Console.WriteLine("Login with Username and Password!");
     
