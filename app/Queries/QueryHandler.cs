@@ -1,17 +1,17 @@
 using Npgsql;
-namespace app;
 
-public class TestQueries
+namespace app.Queries;
+
+public class QueryHandler
 {
     private NpgsqlDataSource _database;
-
-    public TestQueries(NpgsqlDataSource database)
+    public QueryHandler(NpgsqlDataSource database)
     {
         _database = database;
     }
     
-
-    public async void AllCustomers()
+    
+    public async void AllCustomersTest()
     {
         await using (var cmd = _database.CreateCommand("SELECT * FROM customers")) // Skapa vårt kommand/query
         await using (var reader = await cmd.ExecuteReaderAsync()) // Kör vår kommando/query och inväntar resultatet.
@@ -24,4 +24,5 @@ public class TestQueries
                                   $"birthyear: {reader.GetInt32(4)}");
             }
     }
+    
 }
