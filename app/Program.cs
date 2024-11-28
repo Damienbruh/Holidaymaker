@@ -1,6 +1,5 @@
-﻿
-namespace app;
-
+﻿namespace app;
+using app.Queries;
 
 class Program
 {
@@ -8,8 +7,9 @@ class Program
     {
         Database db = new();
         TestQueries queries = new(db.Connection());
+        HotellQueries hotellQueries = new(db.Connection());
         
-        queries.AllCustomers();
+        /*queries.AllCustomers();*/
         //program.loginMenu();
         
     }
