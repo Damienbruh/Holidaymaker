@@ -9,13 +9,13 @@ class Program
     {
         Env.TraversePath().Load();
 
-        Database db = new();
+        Database database = new();
         
-        //HotellQueries hotellQueries = new(db.Connection());
-        QueryHandler queryHandler = new(db.Connection());
-        //Menu menu = new(queryHandler);
-        
-        
+        QueryHandler queryHandler = new(database.Connection());
+        Menu menu = new(queryHandler);
+
+        menu.MenuMain();
+
     }
 }
 
