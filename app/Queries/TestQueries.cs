@@ -1,5 +1,5 @@
 using Npgsql;
-namespace app;
+namespace app.Queries;
 
 public class TestQueries
 {

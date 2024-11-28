@@ -5,6 +5,7 @@ namespace app;
 public class Menu
 {
     private string[] _menuOptionsMain = {"1. view bookings","2. create new booking", "3. customer management","4. logOut","5. quit"};
+    private string[] _menuOptionsViewCustomer = {"1. view all customers","2. view customer by id", "3. view customer by name","4. return"};
 
     private string _optionMessage = "please select what you want to do by typing the number associated";
 
@@ -18,6 +19,7 @@ public class Menu
         ManageCustomers,
     }
 
+    private bool _clearBeforeMenu = true;
     private MenuStateEnum _menuState = MenuStateEnum.LoggedOut;
     
     private QueryHandler _queryHandler;
@@ -30,6 +32,7 @@ public class Menu
 
     private void PrintMenu()
     {
+        if(_clearBeforeMenu)Console.Clear();
         switch (_menuState)
         {
             case MenuStateEnum.LoggedOut:
@@ -52,6 +55,10 @@ public class Menu
             case MenuStateEnum.CreateBookings:
                 break;
             case MenuStateEnum.ViewCustomers:
+                foreach (string options in _menuOptionsViewCustomer)
+                {
+                    Console.WriteLine(options);
+                }
                 break;
             case MenuStateEnum.ManageCustomers:
                 break;
@@ -61,11 +68,16 @@ public class Menu
     private void GetInput()
     {
         string? response = Console.ReadLine();
-        if (String.IsNullOrEmpty(response)) 
+
+        while (String.IsNullOrEmpty(response))
         {
-            
+            Console.WriteLine("invalid option try again");
+            response = Console.ReadLine();
         }
         
+        //for (string? response  = Console.ReadLine(); String.IsNullOrEmpty(response); response = Console.ReadLine()); accursed one liner
+        
+            
         switch (_menuState)
         {
             case MenuStateEnum.LoggedOut:
