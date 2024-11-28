@@ -5,7 +5,7 @@ namespace app;
 
 class Program
 {
-    static void Main()
+    static async Task Main()
     {
         Env.TraversePath().Load();
 
@@ -14,8 +14,8 @@ class Program
         QueryHandler queryHandler = new(database.Connection());
         Menu menu = new(queryHandler);
 
-        menu.MenuMain();
-
+        await menu.MenuMain();
+        Console.ReadLine();
     }
 }
 
