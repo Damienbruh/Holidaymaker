@@ -1,19 +1,20 @@
-﻿
-namespace app;
+﻿namespace app;
 
 
 class Program
 {
+    
     static void Main()
     {
         Database db = new();
         TestQueries queries = new(db.Connection());
         
         queries.AllCustomers();
-        //program.loginMenu();
         
+        loginMenu();
     }
-    /*public void loginMenu()
+
+    public static void loginMenu()
     {
         Console.WriteLine("Login with Username and Password!");
     
@@ -25,6 +26,7 @@ class Program
         while (!isLoggedIn)
         {
             Console.WriteLine("Enter your username: ");
+            
             String username = Console.ReadLine();
     
             Console.WriteLine("Enter your password ");
@@ -34,8 +36,6 @@ class Program
             {
                 Console.WriteLine("\nCorrect credentials! You are now logged in!");
                 isLoggedIn = true;
-                
-
             }
             else
             {
@@ -50,7 +50,7 @@ class Program
         }
         
     
-    }*/
+    }
 }
 
 
