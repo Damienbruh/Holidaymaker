@@ -132,7 +132,7 @@ public class Menu
         switch (response)
         {
             case "1": //view all customers
-                await _queryHandler.TestQueries.AllCustomers();
+                await _queryHandler.CustomerQueries.AllCustomers();
                 break;
             case "2": //find customer by id
                 Console.WriteLine("not implemented");
