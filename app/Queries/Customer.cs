@@ -1,54 +1,39 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Npgsql;
-
+﻿using Npgsql;
 namespace app.Queries;
 
-public class Customer
+public class CustomerQueries
 {
-    public int CustomerId { get; set; }
-    public string Name { get; set; }
-    public string Email { get; set; }
-    public string PhoneNumber { get; set; }
-    public int BirthYear { get; set; }
-}
+    private NpgsqlDataSource _database;
 
-public class CustomerQuery
-{
-    private readonly string _connectionString;
-
-    public CustomerQuery(string connectionString)
+    public CustomerQueries(NpgsqlDataSource database)
     {
-        _connectionString = connectionString;
+        _database = database;
     }
+    
 
-    public async Task<List<Customer>> GetCustomersAsync()
+    public async Task AllCustomers()
     {
-        var customers = new List<Customer>();
-        string query = @"SELECT id, name, email, phone_number, birthyear FROM customers";
-
-        using (var connection = new NpgsqlConnection(_connectionString))
+        try
         {
-            await connection.OpenAsync();
-            using (var command = new NpgsqlCommand(query, connection))
-            {
-                using (var reader = await command.ExecuteReaderAsync())
+            await using (var cmd = _database.CreateCommand("SELECT * FROM customers")) 
+            await using (var reader = await cmd.ExecuteReaderAsync()) 
+                while
+                    (await reader
+                        .ReadAsync())  
                 {
-                    while (await reader.ReadAsync())
-                    {
-                        customers.Add(new Customer
-                        {
-                            CustomerId = reader.GetInt32(0),
-                            Name = reader.GetString(1),
-                            Email = reader.GetString(2),
-                            PhoneNumber = reader.GetString(3),
-                            BirthYear = reader.GetInt32(4)
-                        });
-                    }
+                    Console.WriteLine($"Id: {reader.GetInt32(0)}," +
+                                      $"Name: {reader.GetString(1)}," +
+                                      $"email: {reader.GetString(2)}," +
+                                      $"phone_number: {reader.GetString(3)}," +
+                                      $"birthyear: {reader.GetInt32(4)}");
                 }
-            }
-        }
 
-        return customers;
+            Console.WriteLine("done");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
+        }
     }
 }
