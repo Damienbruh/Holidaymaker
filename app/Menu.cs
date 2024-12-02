@@ -27,7 +27,7 @@ public class Menu
         // { MenuStateEnum.CreateBookings, new []{""}},
         { MenuStateEnum.ViewCustomers, new []{"1. view all customers","2. find customer by id","3. find customer by name", "4. edit customer by id", "5. remove customer by id","6. return"}},
         { MenuStateEnum.ManageCustomers, new []{"1. view customers", "2. add customer", "3. return"}},
-        { MenuStateEnum.TestingMenu, new []{"1. test command 1", "2. test command 2", "3. test command 3"}}
+        { MenuStateEnum.TestingMenu, new []{"1. damien test command", "2. david test command", "3. kasper test command", "4. noel test command"}}
     };
     private readonly Dictionary<MenuStateEnum, Func<Task>> _menuHandlers;
     private MenuStateEnum _menuState;
@@ -196,13 +196,16 @@ public class Menu
     {
         switch (GetInput())
         {
-            case "1": //test 1
+            case "1": //damien testing
                 
                 break;
-            case "2": //test 2
+            case "2": //david testing
                 
                 break;
-            case "3": //test 3
+            case "3": //kasper testing
+                
+                break;
+            case "4": //noel testing
                 
                 break;
         }
