@@ -47,7 +47,7 @@ public class Menu
             { MenuStateEnum.ManageCustomers, HandleManageCustomersMenu},
             { MenuStateEnum.TestingMenu, TestingMenuHandler}
         };
-        _menuState = MenuStateEnum.LoggedOut; //säger var vi startar menustate
+        _menuState = MenuStateEnum.Main; //säger var vi startar menustate
         _queryHandler = queryHandler;
     }
 

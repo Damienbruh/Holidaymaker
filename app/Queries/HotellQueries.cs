@@ -5,15 +5,14 @@ public class HotellQueries
 {
     private NpgsqlDataSource _database;
     
-    private string?[] _postalCodes;
-    private string?[] _region;
+    List<string?> _postalCodes;
+    List<string?> _region;
 
     public HotellQueries(NpgsqlDataSource database)
     {
         _database = database;
-        SpecificHotell();
-        
-        
+        _postalCodes = new List<string?>();
+        _region = new List<string?>();
     }
 
     public async void SpecificHotell()
@@ -24,8 +23,22 @@ public class HotellQueries
                 await using (var reader = await cmd.ExecuteReaderAsync()) // Kör vår kommando/query och inväntar resultatet.
                     while ( await reader.ReadAsync()) // Läser av 1 rad/objekt i taget ifrån resultatet och kommer avsluta loopen när det inte finns fler rader att läsa. 
                     {
-                        _postalCodes.Append(reader.GetString(3));
-                        _region.Append(reader.GetString(5));
+                        if (reader.IsDBNull(2))
+                        {
+                            _postalCodes.Add("null");
+                        }
+                        else
+                        {
+                           _postalCodes.Add(reader.GetString(2)); 
+                        }
+                        if (reader.IsDBNull(4))
+                        {
+                            _region.Add("null");
+                        }
+                        else
+                        {
+                            _region.Add(reader.GetString(4)); 
+                        }
                         /*Console.WriteLine($"hotel_id: {reader.GetInt32(0)}," +
                                           $"street_name: {reader.GetString(1)}," +
                                           $"postal_code: {reader.GetString(2)}," +
@@ -34,14 +47,19 @@ public class HotellQueries
                                           $"country: {reader.GetString(3)}," +
                                           $"distance_to_ski_slope: {reader.GetInt32(3)},");*/
                     }
-            foreach (var VARIABLE in _postalCodes)
+
+            _postalCodes.ForEach(delegate(string postalcode)
+            {
+                Console.WriteLine(postalcode);
+            });
+            /*foreach (var VARIABLE in _postalCodes)
             {
                 Console.WriteLine(VARIABLE);
                 /*if (VARIABLE == null){
                     Console.WriteLine(VARIABLE);
-                }*/
+                }#1#
 
-            }
+            }*/
         }
         catch (Exception e)
         {
