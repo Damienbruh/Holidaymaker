@@ -1,3 +1,4 @@
+using System.Data;
 using Npgsql;
 namespace app.Queries;
 
@@ -10,9 +11,17 @@ public class VerifyLoginHandler
         _database = database;
     }
 
-    public async Task VerifyLogin(string username, string password)
+    public async Task<bool> VerifyLogin(string username, string password)
     {
-        await using (var cmd = _database.CreateCommand("SELECT * FROM customers")) 
+        Boolean verifiedLogin = false;
+        await using (var cmd = _database.CreateCommand($"SELECT verify_login('{username}', '{password}')"))
         await using (var reader = await cmd.ExecuteReaderAsync())
-           
+            while
+                (await reader
+                    .ReadAsync())
+            {
+                verifiedLogin = reader.GetBoolean(0);
+            }
+        return verifiedLogin;
+    }
 }
