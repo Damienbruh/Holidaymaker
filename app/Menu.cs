@@ -39,7 +39,7 @@ public class Menu
 
     public Menu(QueryHandler queryHandler)
     {
-        //här lägger vi till vilken function som skall callas vid vilket state, viktigt att functionen är en async task. skall leta efter bättre lösning
+        //här lägger vi till vilken function som skall callas vid vilket state, viktigt att functionen är en async task. ska leta efter bättre lösning
         _menuHandlers = new Dictionary<MenuStateEnum, Func<Task>>
         {
             { MenuStateEnum.LoggedOut, HandleLoggedOutMenu},
