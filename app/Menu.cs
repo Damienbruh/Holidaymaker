@@ -205,7 +205,11 @@ public class Menu
         switch (GetInput())
         {
             case "1": //damien testing
-                await _queryHandler.CustomerQueries.SearchCustomer("name", "Thom");
+              // SEARCH await _queryHandler.CustomerQueries.SearchCustomer("name", "Thom");
+             // INSERT  await _queryHandler.CustomerQueries.InsertCustomer("David maguy", "Davidmaguy123@gmail.com", "070-418-9995", 1999);
+             // DELETE await _queryHandler.CustomerQueries.DeleteCustomer(201);
+             // UPDATE await _queryHandler.CustomerQueries.UpdateCustomer(200, name: "deez nuticus", email: "deez@gmail.com");
+              
                 break;
             case "2": //david testing
                 _menuState = MenuStateEnum.ResultMenu;

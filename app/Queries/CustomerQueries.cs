@@ -39,7 +39,7 @@ public class CustomerQueries
         }
     }
 
-    public async Task SearchCustomer(string columnName, String searchTerm)
+    public async Task SearchCustomer(string columnName, string searchTerm)// Add a "customer does not exist"
     {
         try
         {
@@ -88,7 +88,7 @@ public class CustomerQueries
         }
     }
 
-    public async Task InsertCustomer(string name, string email, string phoneNumber, string birthyear)
+    public async Task InsertCustomer(string name, string email, string phoneNumber, int birthyear)
     {
         try
         {
@@ -111,14 +111,48 @@ public class CustomerQueries
         {
             Console.WriteLine($"An error occurred: {ex.Message}");
         }
+    } 
+    
+    public async Task UpdateCustomer(int customerId, string? name = null, string? email = null, string? phoneNumber = null, int? birthYear = null)
+    {
+        try
+        {
+           
+            var updateParts = new List<string>();
+
+            if (name != null) updateParts.Add("name = @name");
+            if (email != null) updateParts.Add("email = @Email");
+            if (phoneNumber != null) updateParts.Add("phone_number = @phoneNumber");
+            if (birthYear.HasValue) updateParts.Add("birthyear = @birthYear");
+
+            if (updateParts.Count == 0)
+            {
+                Console.WriteLine("No fields to update.");
+                return;
+            }
+
+            var updateQuery = $"UPDATE customers SET {string.Join(", ", updateParts)} WHERE customer_id = @id";
+
+            await using (var cmd = _database.CreateCommand(updateQuery))
+            {
+                cmd.Parameters.AddWithValue("id", customerId);
+
+                if (name != null) cmd.Parameters.AddWithValue("name", name);
+                if (email != null) cmd.Parameters.AddWithValue("email", email);
+                if (phoneNumber != null) cmd.Parameters.AddWithValue("phoneNumber", phoneNumber);
+                if (birthYear.HasValue) cmd.Parameters.AddWithValue("birthYear", birthYear.Value);
+
+                var rowsAffected = await cmd.ExecuteNonQueryAsync();
+                Console.WriteLine(rowsAffected > 0
+                    ? "Customer updated successfully."
+                    : "No customer found with the specified ID.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
     }
-
-
-
- public async Task UpdateCustomer(int customerId, string? name = null, string? email = null,
-     string? phoneNumber = null, string? birthyear = null)
- {
-
- }
 }
+
 
