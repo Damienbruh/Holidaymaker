@@ -65,7 +65,7 @@ public class Menu
     {
         if (_menuHandlers.TryGetValue(_menuState, out var handler))
         {
-            await handler();
+            await handler(); // can i get response first and pass in here?
         }
         else
         {
@@ -144,8 +144,10 @@ public class Menu
             case "5": //quit
                 _menuLoop = false;
                 break;
-            case "6": // testing menu
+            case "6":
                 _menuState = MenuStateEnum.TestingMenu;
+                break;
+            case "7": //testingkasper
                 break;
         }
     }
@@ -170,7 +172,7 @@ public class Menu
             case "5": //remove customer by id
                 _menuLoop = false;
                 break;
-            case "6": // return
+            case "6":
                 _menuState = MenuStateEnum.ManageCustomers;
                 break;
         }
@@ -210,7 +212,7 @@ public class Menu
                 }
                 break;
             case "3": //kasper testing
-                
+                _queryHandler.HotellQueries.AllHotels();
                 break;
             case "4": //noel testing
                 
