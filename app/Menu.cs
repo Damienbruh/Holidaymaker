@@ -148,7 +148,6 @@ public class Menu
                 _menuState = MenuStateEnum.TestingMenu;
                 break;
             case "7": //testingkasper
-                _queryHandler.HotellQueries.SpecificHotell();
                 break;
         }
     }
@@ -210,7 +209,7 @@ public class Menu
                 }
                 break;
             case "3": //kasper testing
-                
+                _queryHandler.HotellQueries.AllHotels();
                 break;
             case "4": //noel testing
                 
