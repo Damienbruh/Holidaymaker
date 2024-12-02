@@ -197,7 +197,7 @@ public class Menu
         switch (GetInput())
         {
             case "1": //damien testing
-                
+                await _queryHandler.CustomerQueries.SearchCustomer("name", "Thom");
                 break;
             case "2": //david testing
                 
