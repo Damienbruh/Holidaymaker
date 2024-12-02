@@ -41,7 +41,7 @@ public class Menu
             { MenuStateEnum.ViewCustomers, HandleViewCustomersMenu},
             { MenuStateEnum.ManageCustomers, HandleManageCustomersMenu}
         };
-        _menuState = MenuStateEnum.ViewCustomers;
+        _menuState = MenuStateEnum.ViewCustomers; //säger var vi startar menustate
         _queryHandler = queryHandler;
     }
 
