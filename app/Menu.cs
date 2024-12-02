@@ -16,6 +16,7 @@ public class Menu
         ViewCustomers,
         ManageCustomers,
         TestingMenu,
+        ResultMenu,
     }
 
     //här specifierar vi vad varje menystate ska visa
@@ -27,7 +28,8 @@ public class Menu
         // { MenuStateEnum.CreateBookings, new []{""}},
         { MenuStateEnum.ViewCustomers, new []{"1. view all customers","2. find customer by id","3. find customer by name", "4. edit customer by id", "5. remove customer by id","6. return"}},
         { MenuStateEnum.ManageCustomers, new []{"1. view customers", "2. add customer", "3. return"}},
-        { MenuStateEnum.TestingMenu, new []{"1. damien test command", "2. david test command", "3. kasper test command", "4. noel test command"}}
+        { MenuStateEnum.TestingMenu, new []{"1. damien test command", "2. david test command", "3. kasper test command", "4. noel test command"}},
+        { MenuStateEnum.ResultMenu, new []{"arrow keys to navigate", "enter to confirm", "backspace to return"}}
     };
     private readonly Dictionary<MenuStateEnum, Func<Task>> _menuHandlers;
     private MenuStateEnum _menuState;
@@ -92,7 +94,7 @@ public class Menu
             Console.WriteLine(_menuMessage);
             foreach (var option in options)
             {
-                Console.WriteLine(option);
+                Console.Write(option + "   ");
             }
         }
         else
@@ -200,7 +202,7 @@ public class Menu
                 await _queryHandler.CustomerQueries.SearchCustomer("name", "Thom");
                 break;
             case "2": //david testing
-                foreach (var customer in await _queryHandler.TestQueries.AllCustomers())
+                foreach (var customer in await _queryHandler.TestQueries.TestQuery())
                 {
                     Console.WriteLine($"Id: {customer.Id}, Name: {customer.Name}, Email: {customer.Email}, PhoneNumber: {customer.PhoneNumber}, BirthYear: {customer.Birthyear}");
                 }
