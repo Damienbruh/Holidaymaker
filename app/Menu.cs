@@ -115,6 +115,9 @@ public class Menu
             case "5": //quit
                 _menuLoop = false;
                 break;
+            case "7": //testing
+                _queryHandler.HotellQueries.SpecificHotell();
+                break;
         }
     }
     private async Task HandleViewBookingsMenu() {}
