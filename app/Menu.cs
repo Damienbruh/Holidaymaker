@@ -100,6 +100,7 @@ public class Menu
             {
                 Console.Write(option + "   ");
             }
+            Console.WriteLine();
         }
         else
         {
@@ -223,36 +224,113 @@ public class Menu
         }
         
     }
-    
-    
+
+    private string PadBoth(string text, int totalWidth)
+    {
+        int spaces = totalWidth - text.Length;
+        int padLeft = spaces / 2 + text.Length;
+        return text.PadLeft(padLeft).PadRight(totalWidth);
+    }
     
     private async Task ResultMenuHandler()
     {
         List<Customer> customers = await _queryHandler.TestQueries.TestQuery();
+        int maxIdLength = customers.Max(c => c.Id.ToString().Length);
+        int maxNameLength = customers.Max(c => (c.Name ?? "").Length);
+        int maxEmailLength = customers.Max(c => (c.Email ?? "").Length);
+        int maxPhonenumberLength = customers.Max(c => (c.PhoneNumber ?? "").Length);
+        int maxBirthyearLength = customers.Max(c => c.Birthyear.ToString().Length);
+        int extraTextLength = "Id:   |  Name:   |  Email:   |  PhoneNumber:   |  BirthYear:   |".Length;
+        int totalWidth = maxIdLength + maxNameLength + maxEmailLength + maxPhonenumberLength + maxBirthyearLength + extraTextLength;
         int customersStart = 0;
         int customersEnd = 10;
         ConsoleKeyInfo key;
         bool test = true;
         int row = 0;
-        //(int left, int top) = Console.GetCursorPosition();
-        
         Console.Clear();
+        Console.WriteLine(new string('-', totalWidth));
+        Console.WriteLine("|" + PadBoth("viewing customers", totalWidth - 2) + "|");
+        Console.WriteLine(new string('-', totalWidth));
+        
+        (int left, int top) = Console.GetCursorPosition();
+        
+        
+
+        Console.CursorVisible = false;
+        
         while (test)
         {
-            Console.Clear();
-            //Console.SetCursorPosition(left, top);
+            Console.SetCursorPosition(left, top);
             
             for (int i = customersStart; i < customersEnd && i < customers.Count; i++)
             {
                 Customer customer = customers[i];
 
                 Console.ForegroundColor = (i == row) ? ConsoleColor.Green : ConsoleColor.Gray;
-                
-                Console.WriteLine($"Id: {customer.Id}, Name: {customer.Name}, Email: {customer.Email}, PhoneNumber: {customer.PhoneNumber}, BirthYear: {customer.Birthyear}");
+
+                if (i == row)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"Id: {customer.Id.ToString().PadRight(maxIdLength)}  |  " +
+                                      $"Name: {(customer.Name ?? "null").PadRight(maxNameLength)}  |  " +
+                                      $"Email: {(customer.Email ?? "null").PadRight(maxEmailLength)}  |  " +
+                                      $"PhoneNumber: {(customer.PhoneNumber ?? "null").PadRight(maxPhonenumberLength)}  |  " +
+                                      $"BirthYear: {customer.Birthyear.ToString().PadRight(maxBirthyearLength)}" + "  <--");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.Write("Id: ");
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.Write(customer.Id.ToString().PadRight(maxIdLength));
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.Write("  |  ");
+                    
+                    Console.Write("Name: ");
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.Write((customer.Name ?? "null").PadRight(maxNameLength));
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.Write("  |  ");
+                    
+                    Console.Write("Email: ");
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.Write((customer.Email ?? "null").PadRight(maxEmailLength));
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.Write("  |  ");
+                    
+                    Console.Write("PhoneNumber: ");
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.Write((customer.PhoneNumber ?? "null").PadRight(maxPhonenumberLength));
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.Write("  |  ");
+                    
+                    Console.Write("BirthYear: ");
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.Write(customer.Birthyear.ToString().PadRight(maxBirthyearLength));
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.WriteLine("  |  ");
+                }
             }
+            Console.ResetColor();
+            Console.WriteLine(new string('-', totalWidth));
+            if (_menuOptions.TryGetValue(_menuState, out string[]? options))
+            {
+                string optionsText = "";
+                foreach (var option in options)
+                {
+                    optionsText = optionsText + option + "   ";
+                }
+                Console.WriteLine("|" + PadBoth(optionsText, totalWidth - 2) + "|");
+            }
+            else
+            {
+                Console.WriteLine("no options for this state");
+            }
+            Console.WriteLine(new string('-', totalWidth));
+            
             
             key = Console.ReadKey(true);
-
+            
             switch (key.Key)
             {
                 case ConsoleKey.DownArrow:
