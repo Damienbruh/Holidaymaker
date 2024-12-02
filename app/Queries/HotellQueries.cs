@@ -4,6 +4,8 @@ namespace app.Queries;
 public class HotellQueries
 {
     private NpgsqlDataSource _database;
+    
+    
 
     public HotellQueries(NpgsqlDataSource database)
     {
