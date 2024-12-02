@@ -48,7 +48,7 @@ public class Menu
             { MenuStateEnum.ManageCustomers, HandleManageCustomersMenu},
             { MenuStateEnum.TestingMenu, TestingMenuHandler}
         };
-        _menuState = MenuStateEnum.LoggedOut; //säger var vi startar menu state
+        _menuState = MenuStateEnum.TestingMenu; //säger var vi startar menu state
         _queryHandler = queryHandler;
     }
 
@@ -204,6 +204,10 @@ public class Menu
                 break;
             case "2": //david testing
                 
+                foreach (var customer in await _queryHandler.TestQueries.AllCustomers())
+                {
+                    Console.WriteLine($"Id: {customer.Id}, Name: {customer.Name}, Email: {customer.Email}, PhoneNumber: {customer.PhoneNumber}, BirthYear: {customer.Birthyear}");
+                }
                 break;
             case "3": //kasper testing
                 
