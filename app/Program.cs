@@ -5,17 +5,18 @@ namespace app;
 
 class Program
 {
-    static void Main()
+    static async Task Main()
     {
         Env.TraversePath().Load();
 
-        Database db = new();
-        TestQueries queries = new(db.Connection());
-        //HotellQueries hotellQueries = new(db.Connection());
-        QueryHandler queryHandler = new(db.Connection());
-        //Menu menu = new(queryHandler);
+        Database database = new();
         
-        queries.AllCustomers();
+        QueryHandler queryHandler = new(database.Connection());
+        Menu menu = new(queryHandler);
+
+        await menu.MenuMain();
+        Console.WriteLine("program will now exit press any key to continue");
+        Console.ReadLine();
         
     }
 }

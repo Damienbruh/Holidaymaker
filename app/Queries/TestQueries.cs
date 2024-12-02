@@ -1,11 +1,11 @@
-﻿using Npgsql;
+using Npgsql;
 namespace app.Queries;
 
-public class CustomerQueries
+public class TestQueries
 {
     private NpgsqlDataSource _database;
 
-    public CustomerQueries(NpgsqlDataSource database)
+    public TestQueries(NpgsqlDataSource database)
     {
         _database = database;
     }
@@ -15,11 +15,11 @@ public class CustomerQueries
     {
         try
         {
-            await using (var cmd = _database.CreateCommand("SELECT * FROM customers")) 
-            await using (var reader = await cmd.ExecuteReaderAsync()) 
+            await using (var cmd = _database.CreateCommand("SELECT * FROM customers")) // Skapa vårt kommand/query
+            await using (var reader = await cmd.ExecuteReaderAsync()) // Kör vår kommando/query och inväntar resultatet.
                 while
                     (await reader
-                        .ReadAsync())  
+                        .ReadAsync()) // Läser av 1 rad/objekt i taget ifrån resultatet och kommer avsluta loopen när det inte finns fler rader att läsa. 
                 {
                     Console.WriteLine($"Id: {reader.GetInt32(0)}," +
                                       $"Name: {reader.GetString(1)}," +
