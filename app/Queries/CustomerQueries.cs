@@ -39,7 +39,7 @@ public class CustomerQueries
         }
     }
 
-    public async Task SearchCustomer(string columnName, String searchTerm)
+    public async Task SearchCustomer(string columnName, string searchTerm)
     {
         try
         {
@@ -88,7 +88,7 @@ public class CustomerQueries
         }
     }
 
-    public async Task InsertCustomer(string name, string email, string phoneNumber, string birthyear)
+    public async Task InsertCustomer(string name, string email, string phoneNumber, int birthyear)
     {
         try
         {
