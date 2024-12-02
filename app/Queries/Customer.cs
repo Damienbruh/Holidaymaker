@@ -43,7 +43,7 @@ public class CustomerQueries
     {
         try
         {
-            var query = $"SELECT * FROM customer WHERE {columnName} = '{searchTerm} ILIKE @searchTerm'";
+            var query = $"SELECT * FROM customers WHERE {columnName} = '{searchTerm} ILIKE @searchTerm'";
             await using (var cmd = _database.CreateCommand(query))
             {
                 cmd.Parameters.AddWithValue("searchTerm", $"%{searchTerm}% ");
@@ -71,7 +71,7 @@ public class CustomerQueries
     {
         try
         {
-            var query = $"DELETE FROM customer WHERE customer_id = {customerId}";
+            var query = $"DELETE FROM customers WHERE customer_id = {customerId}";
             await using (var cmd = _database.CreateCommand(query))
             {
                 cmd.Parameters.AddWithValue("customer_id", customerId);
@@ -112,13 +112,13 @@ public class CustomerQueries
             Console.WriteLine($"An error occurred: {ex.Message}");
         }
     }
-}
 
 
-/* public async Task UpdateCustomer(int customerId, string? name = null, string? email = null,
+
+ public async Task UpdateCustomer(int customerId, string? name = null, string? email = null,
      string? phoneNumber = null, string? birthyear = null)
  {
 
  }
 }
-*/
+
