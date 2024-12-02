@@ -112,13 +112,13 @@ public class CustomerQueries
             Console.WriteLine($"An error occurred: {ex.Message}");
         }
     }
-}
 
 
-/* public async Task UpdateCustomer(int customerId, string? name = null, string? email = null,
+
+ public async Task UpdateCustomer(int customerId, string? name = null, string? email = null,
      string? phoneNumber = null, string? birthyear = null)
  {
 
  }
 }
-*/
+
