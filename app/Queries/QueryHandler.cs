@@ -5,13 +5,15 @@ namespace app.Queries;
 public class QueryHandler
 {
     private NpgsqlDataSource _database;
-   // public TestQueries TestQueries { get; }
+    public TestQueries TestQueries { get; }
+    public VerifyLoginHandler VerifyLoginHandler { get; }
     public HotellQueries HotellQueries { get; }
     public CustomerQueries CustomerQueries { get; }
     public QueryHandler(NpgsqlDataSource database)
     {
         _database = database;
-      //  TestQueries = new(_database);
+        TestQueries = new(_database);
+        VerifyLoginHandler = new(_database);
         HotellQueries = new(_database);
         CustomerQueries = new(_database);
     }
