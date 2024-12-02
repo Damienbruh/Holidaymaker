@@ -35,8 +35,8 @@ public class HotellQueries
             await using (var cmd = _database.CreateCommand("SELECT * FROM hotels")) // Skapa vårt kommand/query
                 await using (var reader = await cmd.ExecuteReaderAsync()) // Kör vår kommando/query och inväntar resultatet.
                     while ( await reader.ReadAsync()) // Läser av 1 rad/objekt i taget ifrån resultatet och kommer avsluta loopen när det inte finns fler rader att läsa. 
-                    {
-                        Dictionary<int, List<string>> columnMappings = new Dictionary<int, List<string>>()
+                    { /*definera vilken index alla columnerna har till deras lista*/
+                        Dictionary<int, List<string>> columnLists = new Dictionary<int, List<string>>()
                         {
                             { 1, _streetNames },
                             { 2, _postalCodes },
@@ -47,13 +47,14 @@ public class HotellQueries
                             { 7, _distancesToTownCenter },
                             { 8, _ratings }
                         };
+                        /*Läs av datan från databasen genom column index som key samt till deras corresponding list*/
                         while (reader.Read())
                         {
-                            foreach (var entry in columnMappings)
+                            foreach (var entry in columnLists)
                             {
                                 int columnIndex = entry.Key;
                                 List<string> targetList = entry.Value;
-                                
+                                /*if null, add null or changle null value to string*/
                                 if (reader.IsDBNull(columnIndex))
                                 {
                                     targetList.Add("null");
@@ -64,22 +65,7 @@ public class HotellQueries
                                 }
                             }
                         }
-                        /*if (reader.IsDBNull(2))
-                        {   
-                            _postalCodes.Add("null");
-                        }
-                        else
-                        {
-                           _postalCodes.Add(reader.GetString(2));
-                        }
-                        if (reader.IsDBNull(4))
-                        {
-                            _region.Add("null");
-                        }
-                        else
-                        {
-                            _region.Add(reader.GetString(4));
-                        }*/
+                        
                     }
 
             _postalCodes.ForEach(delegate(string postalcode)

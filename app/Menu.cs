@@ -147,7 +147,7 @@ public class Menu
             case "6":
                 _menuState = MenuStateEnum.TestingMenu;
                 break;
-            case "7": //testing
+            case "7": //testingkasper
                 _queryHandler.HotellQueries.SpecificHotell();
                 break;
         }
