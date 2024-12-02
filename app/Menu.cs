@@ -1,4 +1,6 @@
+using System.Xml.Xsl;
 using app.Queries;
+using app.Queries.TableObjects;
 namespace app;
 public class Menu
 {
@@ -16,6 +18,7 @@ public class Menu
         ViewCustomers,
         ManageCustomers,
         TestingMenu,
+        ResultMenu,
     }
 
     //här specifierar vi vad varje menystate ska visa
@@ -27,7 +30,8 @@ public class Menu
         // { MenuStateEnum.CreateBookings, new []{""}},
         { MenuStateEnum.ViewCustomers, new []{"1. view all customers","2. find customer by id","3. find customer by name", "4. edit customer by id", "5. remove customer by id","6. return"}},
         { MenuStateEnum.ManageCustomers, new []{"1. view customers", "2. add customer", "3. return"}},
-        { MenuStateEnum.TestingMenu, new []{"1. damien test command", "2. david test command", "3. kasper test command", "4. noel test command"}}
+        { MenuStateEnum.TestingMenu, new []{"1. damien test command", "2. david test command", "3. kasper test command", "4. noel test command"}},
+        { MenuStateEnum.ResultMenu, new []{"arrow keys to navigate", "enter to confirm", "backspace to return"}}
     };
     private readonly Dictionary<MenuStateEnum, Func<Task>> _menuHandlers;
     private MenuStateEnum _menuState;
@@ -37,7 +41,7 @@ public class Menu
 
     public Menu(QueryHandler queryHandler)
     {
-        //här lägger vi till vilken function som skall callas vid vilket state, viktigt att functionen är en async task. skall leta efter bättre lösning
+        //här lägger vi till vilken function som skall callas vid vilket state, viktigt att functionen är en async task. ska leta efter bättre lösning
         _menuHandlers = new Dictionary<MenuStateEnum, Func<Task>>
         {
             { MenuStateEnum.LoggedOut, HandleLoggedOutMenu},
@@ -46,7 +50,8 @@ public class Menu
             { MenuStateEnum.CreateBookings, HandleCreateBookingsMenu},
             { MenuStateEnum.ViewCustomers, HandleViewCustomersMenu},
             { MenuStateEnum.ManageCustomers, HandleManageCustomersMenu},
-            { MenuStateEnum.TestingMenu, TestingMenuHandler}
+            { MenuStateEnum.TestingMenu, TestingMenuHandler},
+            { MenuStateEnum.ResultMenu, ResultMenuHandler}
         };
         _menuState = MenuStateEnum.TestingMenu; //säger var vi startar menu state
         _queryHandler = queryHandler;
@@ -54,10 +59,11 @@ public class Menu
 
     public async Task MenuMain()
     {
+        PrintMenuOptions();
         while (_menuLoop)
         {
-            PrintMenu();
             await CallHandler();
+            PrintMenuOptions();
         }
     }
 
@@ -85,15 +91,16 @@ public class Menu
         return response;
     }
 
-    private void PrintMenu()
+    private void PrintMenuOptions()
     {
         if (_menuOptions.TryGetValue(_menuState, out string[]? options))
         {
             Console.WriteLine(_menuMessage);
             foreach (var option in options)
             {
-                Console.WriteLine(option);
+                Console.Write(option + "   ");
             }
+            Console.WriteLine();
         }
         else
         {
@@ -200,16 +207,13 @@ public class Menu
         {
             case "1": //damien testing
               // SEARCH await _queryHandler.CustomerQueries.SearchCustomer("name", "Thom");
-            // INSERT  await _queryHandler.CustomerQueries.InsertCustomer("David maguy", "Davidmaguy123@gmail.com", "070-418-9995", 1999);
-            // DELETE await _queryHandler.CustomerQueries.DeleteCustomer(201);
+             // INSERT  await _queryHandler.CustomerQueries.InsertCustomer("David maguy", "Davidmaguy123@gmail.com", "070-418-9995", 1999);
+             // DELETE await _queryHandler.CustomerQueries.DeleteCustomer(201);
+             // UPDATE await _queryHandler.CustomerQueries.UpdateCustomer(200, name: "deez nuticus", email: "deez@gmail.com");
               
                 break;
             case "2": //david testing
-                
-                foreach (var customer in await _queryHandler.TestQueries.AllCustomers())
-                {
-                    Console.WriteLine($"Id: {customer.Id}, Name: {customer.Name}, Email: {customer.Email}, PhoneNumber: {customer.PhoneNumber}, BirthYear: {customer.Birthyear}");
-                }
+                _menuState = MenuStateEnum.ResultMenu;
                 break;
             case "3": //kasper testing
                 _queryHandler.HotellQueries.AllHotels();
@@ -219,5 +223,169 @@ public class Menu
                 break;
         }
         
+    }
+
+    private string PadBoth(string text, int totalWidth)
+    {
+        int spaces = totalWidth - text.Length;
+        int padLeft = spaces / 2 + text.Length;
+        return text.PadLeft(padLeft).PadRight(totalWidth);
+    }
+    
+    private async Task ResultMenuHandler()
+    {
+        List<Customer> customers = await _queryHandler.TestQueries.TestQuery();
+        int maxIdLength = customers.Max(c => c.Id.ToString().Length);
+        int maxNameLength = customers.Max(c => (c.Name ?? "").Length);
+        int maxEmailLength = customers.Max(c => (c.Email ?? "").Length);
+        int maxPhonenumberLength = customers.Max(c => (c.PhoneNumber ?? "").Length);
+        int maxBirthyearLength = customers.Max(c => c.Birthyear.ToString().Length);
+        int extraTextLength = "Id:   |  Name:   |  Email:   |  PhoneNumber:   |  BirthYear:   |".Length;
+        int totalWidth = maxIdLength + maxNameLength + maxEmailLength + maxPhonenumberLength + maxBirthyearLength + extraTextLength;
+        int customersStart = 0;
+        int customersEnd = 10;
+        ConsoleKeyInfo key;
+        bool test = true;
+        int row = 0;
+        Console.Clear();
+        Console.WriteLine(new string('-', totalWidth));
+        Console.WriteLine("|" + PadBoth("viewing customers", totalWidth - 2) + "|");
+        Console.WriteLine(new string('-', totalWidth));
+        
+        (int left, int top) = Console.GetCursorPosition();
+        
+        
+
+        Console.CursorVisible = false;
+        
+        while (test)
+        {
+            Console.SetCursorPosition(left, top);
+            
+            for (int i = customersStart; i < customersEnd && i < customers.Count; i++)
+            {
+                Customer customer = customers[i];
+
+                Console.ForegroundColor = (i == row) ? ConsoleColor.Green : ConsoleColor.Gray;
+
+                if (i == row)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"Id: {customer.Id.ToString().PadRight(maxIdLength)}  |  " +
+                                      $"Name: {(customer.Name ?? "null").PadRight(maxNameLength)}  |  " +
+                                      $"Email: {(customer.Email ?? "null").PadRight(maxEmailLength)}  |  " +
+                                      $"PhoneNumber: {(customer.PhoneNumber ?? "null").PadRight(maxPhonenumberLength)}  |  " +
+                                      $"BirthYear: {customer.Birthyear.ToString().PadRight(maxBirthyearLength)}" + "  <--");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.Write("Id: ");
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.Write(customer.Id.ToString().PadRight(maxIdLength));
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.Write("  |  ");
+                    
+                    Console.Write("Name: ");
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.Write((customer.Name ?? "null").PadRight(maxNameLength));
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.Write("  |  ");
+                    
+                    Console.Write("Email: ");
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.Write((customer.Email ?? "null").PadRight(maxEmailLength));
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.Write("  |  ");
+                    
+                    Console.Write("PhoneNumber: ");
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.Write((customer.PhoneNumber ?? "null").PadRight(maxPhonenumberLength));
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.Write("  |  ");
+                    
+                    Console.Write("BirthYear: ");
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.Write(customer.Birthyear.ToString().PadRight(maxBirthyearLength));
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.WriteLine("  |  ");
+                }
+            }
+            Console.ResetColor();
+            Console.WriteLine(new string('-', totalWidth));
+            if (_menuOptions.TryGetValue(_menuState, out string[]? options))
+            {
+                string optionsText = "";
+                foreach (var option in options)
+                {
+                    optionsText = optionsText + option + "   ";
+                }
+                Console.WriteLine("|" + PadBoth(optionsText, totalWidth - 2) + "|");
+            }
+            else
+            {
+                Console.WriteLine("no options for this state");
+            }
+            Console.WriteLine(new string('-', totalWidth));
+            
+            
+            key = Console.ReadKey(true);
+            
+            switch (key.Key)
+            {
+                case ConsoleKey.DownArrow:
+                    if (row == customers.Count - 1)
+                    {
+                        row = 0;
+                        customersStart = 0;
+                        customersEnd = 10;
+                    }
+                    else
+                    {
+                        if (row >= customers.Count - 5)
+                        {
+                            customersStart = customers.Count - 10;
+                            customersEnd = customers.Count;
+                        }
+                        else if (row >= 4)
+                        {
+                            customersStart++;
+                            customersEnd++;
+                        }
+
+                        row++;
+                    }
+                    break;
+                case ConsoleKey.UpArrow:
+                    if (row == 0)
+                    {
+                        row = customers.Count - 1;
+                        customersStart = customers.Count - 10;
+                        customersEnd = customers.Count;
+                    }
+                    else
+                    {
+                        if (row <= 4)
+                        {
+                            customersStart = 0;
+                            customersEnd = 10;
+                        }
+                        else if (row < customers.Count - 5)
+                        {
+                            customersStart--;
+                            customersEnd--;
+                        }
+                        
+                        row --;
+                    }
+                    
+                    break;
+                case ConsoleKey.Enter:
+                    test = false;
+                    break;
+                    
+            }
+            
+        }
     }
 }

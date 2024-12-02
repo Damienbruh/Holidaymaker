@@ -12,14 +12,14 @@ public class TestQueries
     }
     
 
-    public async Task<List<Customer>> AllCustomers()
+    public async Task<List<Customer>> TestQuery()
     {
         List<Customer> customers = new List<Customer>();
-        await using (var cmd = _database.CreateCommand("SELECT * FROM customers")) // Skapa vårt kommand/query
-        await using (var reader = await cmd.ExecuteReaderAsync()) // Kör vår kommando/query och inväntar resultatet.
+        await using (var cmd = _database.CreateCommand("SELECT * FROM customers"))
+        await using (var reader = await cmd.ExecuteReaderAsync())
             while
                 (await reader
-                    .ReadAsync()) // Läser av 1 rad/objekt i taget ifrån resultatet och kommer avsluta loopen när det inte finns fler rader att läsa. 
+                    .ReadAsync()) 
             {
                 customers.Add(new Customer
                 {
