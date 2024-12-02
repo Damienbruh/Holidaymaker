@@ -1,4 +1,6 @@
+using System.Xml.Xsl;
 using app.Queries;
+using app.Queries.TableObjects;
 namespace app;
 public class Menu
 {
@@ -48,7 +50,8 @@ public class Menu
             { MenuStateEnum.CreateBookings, HandleCreateBookingsMenu},
             { MenuStateEnum.ViewCustomers, HandleViewCustomersMenu},
             { MenuStateEnum.ManageCustomers, HandleManageCustomersMenu},
-            { MenuStateEnum.TestingMenu, TestingMenuHandler}
+            { MenuStateEnum.TestingMenu, TestingMenuHandler},
+            { MenuStateEnum.ResultMenu, ResultMenuHandler}
         };
         _menuState = MenuStateEnum.TestingMenu; //säger var vi startar menu state
         _queryHandler = queryHandler;
@@ -56,10 +59,11 @@ public class Menu
 
     public async Task MenuMain()
     {
+        PrintMenuOptions();
         while (_menuLoop)
         {
-            PrintMenuOptions();
             await CallHandler();
+            PrintMenuOptions();
         }
     }
 
@@ -204,10 +208,7 @@ public class Menu
                 await _queryHandler.CustomerQueries.SearchCustomer("name", "Thom");
                 break;
             case "2": //david testing
-                foreach (var customer in await _queryHandler.TestQueries.TestQuery())
-                {
-                    Console.WriteLine($"Id: {customer.Id}, Name: {customer.Name}, Email: {customer.Email}, PhoneNumber: {customer.PhoneNumber}, BirthYear: {customer.Birthyear}");
-                }
+                _menuState = MenuStateEnum.ResultMenu;
                 break;
             case "3": //kasper testing
                 _queryHandler.HotellQueries.AllHotels();
@@ -217,5 +218,92 @@ public class Menu
                 break;
         }
         
+    }
+    
+    
+    
+    private async Task ResultMenuHandler()
+    {
+        List<Customer> customers = await _queryHandler.TestQueries.TestQuery();
+        int customersStart = 0;
+        int customersEnd = 10;
+        ConsoleKeyInfo key;
+        bool test = true;
+        int row = 0;
+        //(int left, int top) = Console.GetCursorPosition();
+        
+        Console.Clear();
+        while (test)
+        {
+            Console.Clear();
+            //Console.SetCursorPosition(left, top);
+            
+            for (int i = customersStart; i < customersEnd && i < customers.Count; i++)
+            {
+                Customer customer = customers[i];
+
+                Console.ForegroundColor = (i == row) ? ConsoleColor.Green : ConsoleColor.Gray;
+                
+                Console.WriteLine($"Id: {customer.Id}, Name: {customer.Name}, Email: {customer.Email}, PhoneNumber: {customer.PhoneNumber}, BirthYear: {customer.Birthyear}");
+            }
+            
+            key = Console.ReadKey(true);
+
+            switch (key.Key)
+            {
+                case ConsoleKey.DownArrow:
+                    if (row == customers.Count - 1)
+                    {
+                        row = 0;
+                        customersStart = 0;
+                        customersEnd = 10;
+                    }
+                    else
+                    {
+                        if (row >= customers.Count - 5)
+                        {
+                            customersStart = customers.Count - 10;
+                            customersEnd = customers.Count;
+                        }
+                        else if (row >= 4)
+                        {
+                            customersStart++;
+                            customersEnd++;
+                        }
+
+                        row++;
+                    }
+                    break;
+                case ConsoleKey.UpArrow:
+                    if (row == 0)
+                    {
+                        row = customers.Count - 1;
+                        customersStart = customers.Count - 10;
+                        customersEnd = customers.Count;
+                    }
+                    else
+                    {
+                        if (row <= 4)
+                        {
+                            customersStart = 0;
+                            customersEnd = 10;
+                        }
+                        else if (row < customers.Count - 5)
+                        {
+                            customersStart--;
+                            customersEnd--;
+                        }
+                        
+                        row --;
+                    }
+                    
+                    break;
+                case ConsoleKey.Enter:
+                    test = false;
+                    break;
+                    
+            }
+            
+        }
     }
 }
