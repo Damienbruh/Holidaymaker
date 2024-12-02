@@ -15,13 +15,14 @@ public class Menu
         CreateBookings,
         ViewCustomers,
         ManageCustomers,
+        TestingMenu,
     }
 
     //här specifierar vi vad varje menystate ska visa
     private readonly Dictionary<MenuStateEnum, String[]> _menuOptions = new()
     {
         { MenuStateEnum.LoggedOut, new []{"please input you username and password"} },
-        { MenuStateEnum.Main, new []{"1. view bookings","2. create new booking", "3. customer management","4. logOut","5. quit"}},
+        { MenuStateEnum.Main, new []{"1. view bookings","2. create new booking", "3. customer management","4. logOut","5. quit", "6. testing menu"}},
         // { MenuStateEnum.ViewBookings, new []{""}}, 
         // { MenuStateEnum.CreateBookings, new []{""}},
          { MenuStateEnum.ViewCustomers, new []{"1. view all customers","2. find customer by id","3. find customer by name", "4. edit customer by id", "5. remove customer by id","6. return"}},
@@ -43,7 +44,8 @@ public class Menu
             { MenuStateEnum.ViewBookings, HandleViewBookingsMenu}, 
             { MenuStateEnum.CreateBookings, HandleCreateBookingsMenu},
             { MenuStateEnum.ViewCustomers, HandleViewCustomersMenu},
-            { MenuStateEnum.ManageCustomers, HandleManageCustomersMenu}
+            { MenuStateEnum.ManageCustomers, HandleManageCustomersMenu},
+            { MenuStateEnum.TestingMenu, TestingMenuHandler}
         };
         _menuState = MenuStateEnum.LoggedOut; //säger var vi startar menustate
         _queryHandler = queryHandler;
@@ -145,6 +147,9 @@ public class Menu
             case "5": //quit
                 _menuLoop = false;
                 break;
+            case "6":
+                _menuState = MenuStateEnum.TestingMenu;
+                break;
         }
     }
     private async Task HandleViewBookingsMenu() {}
@@ -204,5 +209,18 @@ public class Menu
                 _menuState = MenuStateEnum.Main;
                 break;
         }
+    }
+
+    private async Task TestingMenuHandler()
+    {
+        Console.WriteLine("weolcome to tsting");
+        string? response = Console.ReadLine();
+
+        while (String.IsNullOrEmpty(response))
+        {
+            Console.WriteLine("invalid option try again");
+            response = Console.ReadLine();
+        }
+        
     }
 }
