@@ -6,7 +6,6 @@ public class TestQueries
 {
     private NpgsqlDataSource _database;
     
-
     public TestQueries(NpgsqlDataSource database)
     {
         _database = database;
