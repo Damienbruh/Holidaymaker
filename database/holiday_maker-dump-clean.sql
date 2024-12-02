@@ -47,7 +47,7 @@ DROP TABLE IF EXISTS public.bookings_join_addons;
 DROP TABLE IF EXISTS public.bookings;
 DROP TABLE IF EXISTS public.admins;
 DROP TABLE IF EXISTS public.addons;
-DROP FUNCTION IF EXISTS public.verify_login(input_email text, input_password text);
+DROP FUNCTION IF EXISTS public.verify_login(input_username text, input_password text);
 -- *not* dropping schema, since initdb creates it
 --
 -- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
@@ -69,17 +69,17 @@ COMMENT ON SCHEMA public IS '';
 -- Name: verify_login(text, text); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.verify_login(input_email text, input_password text) RETURNS boolean
+CREATE FUNCTION public.verify_login(input_username text, input_password text) RETURNS boolean
     LANGUAGE plpgsql
     AS $$
 begin
     return exists
-        (select 1 from admins where admins.username = input_email and admins.password = input_password);
+        (select 1 from admins where admins.username = input_username and admins.password = input_password);
 end
 $$;
 
 
-ALTER FUNCTION public.verify_login(input_email text, input_password text) OWNER TO postgres;
+ALTER FUNCTION public.verify_login(input_username text, input_password text) OWNER TO postgres;
 
 SET default_tablespace = '';
 
