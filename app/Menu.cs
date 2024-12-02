@@ -56,7 +56,7 @@ public class Menu
     {
         while (_menuLoop)
         {
-            PrintMenu();
+            PrintMenuOptions();
             await CallHandler();
         }
     }
@@ -85,7 +85,7 @@ public class Menu
         return response;
     }
 
-    private void PrintMenu()
+    private void PrintMenuOptions()
     {
         if (_menuOptions.TryGetValue(_menuState, out string[]? options))
         {
@@ -200,7 +200,6 @@ public class Menu
                 
                 break;
             case "2": //david testing
-                
                 foreach (var customer in await _queryHandler.TestQueries.AllCustomers())
                 {
                     Console.WriteLine($"Id: {customer.Id}, Name: {customer.Name}, Email: {customer.Email}, PhoneNumber: {customer.PhoneNumber}, BirthYear: {customer.Birthyear}");
