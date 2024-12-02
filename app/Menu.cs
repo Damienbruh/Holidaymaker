@@ -25,8 +25,9 @@ public class Menu
         { MenuStateEnum.Main, new []{"1. view bookings","2. create new booking", "3. customer management","4. logOut","5. quit", "6. testing menu"}},
         // { MenuStateEnum.ViewBookings, new []{""}}, 
         // { MenuStateEnum.CreateBookings, new []{""}},
-         { MenuStateEnum.ViewCustomers, new []{"1. view all customers","2. find customer by id","3. find customer by name", "4. edit customer by id", "5. remove customer by id","6. return"}},
-         { MenuStateEnum.ManageCustomers, new []{"1. view customers", "2. add customer", "3. return"}}
+        { MenuStateEnum.ViewCustomers, new []{"1. view all customers","2. find customer by id","3. find customer by name", "4. edit customer by id", "5. remove customer by id","6. return"}},
+        { MenuStateEnum.ManageCustomers, new []{"1. view customers", "2. add customer", "3. return"}},
+        { MenuStateEnum.TestingMenu, new []{"1. test command 1", "2. test command 2", "3. test command 3"}}
     };
     private readonly Dictionary<MenuStateEnum, Func<Task>> _menuHandlers;
     private MenuStateEnum _menuState;
@@ -47,7 +48,7 @@ public class Menu
             { MenuStateEnum.ManageCustomers, HandleManageCustomersMenu},
             { MenuStateEnum.TestingMenu, TestingMenuHandler}
         };
-        _menuState = MenuStateEnum.LoggedOut; //säger var vi startar menustate
+        _menuState = MenuStateEnum.TestingMenu; //säger var vi startar menu state
         _queryHandler = queryHandler;
     }
 
@@ -147,7 +148,7 @@ public class Menu
             case "5": //quit
                 _menuLoop = false;
                 break;
-            case "6":
+            case "6": // testing menu
                 _menuState = MenuStateEnum.TestingMenu;
                 break;
         }
@@ -181,7 +182,7 @@ public class Menu
             case "5": //remove customer by id
                 _menuLoop = false;
                 break;
-            case "6":
+            case "6": // return
                 _menuState = MenuStateEnum.ManageCustomers;
                 break;
         }
@@ -213,13 +214,25 @@ public class Menu
 
     private async Task TestingMenuHandler()
     {
-        Console.WriteLine("weolcome to tsting");
         string? response = Console.ReadLine();
 
         while (String.IsNullOrEmpty(response))
         {
             Console.WriteLine("invalid option try again");
             response = Console.ReadLine();
+        }
+        
+        switch (response)
+        {
+            case "1": //test 1
+                
+                break;
+            case "2": //test 2
+                
+                break;
+            case "3": //test 3
+                
+                break;
         }
         
     }
