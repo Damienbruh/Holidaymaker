@@ -1,9 +1,11 @@
 using Npgsql;
+using app.Queries.TableObjects;
 namespace app.Queries;
 
 public class TestQueries
 {
     private NpgsqlDataSource _database;
+    
 
     public TestQueries(NpgsqlDataSource database)
     {
@@ -11,29 +13,26 @@ public class TestQueries
     }
     
 
-    public async Task AllCustomers()
+    public async Task<List<Customer>> AllCustomers()
     {
-        try
-        {
-            await using (var cmd = _database.CreateCommand("SELECT * FROM customers")) // Skapa vårt kommand/query
-            await using (var reader = await cmd.ExecuteReaderAsync()) // Kör vår kommando/query och inväntar resultatet.
-                while
-                    (await reader
-                        .ReadAsync()) // Läser av 1 rad/objekt i taget ifrån resultatet och kommer avsluta loopen när det inte finns fler rader att läsa. 
+        List<Customer> customers = new List<Customer>();
+        await using (var cmd = _database.CreateCommand("SELECT * FROM customers")) // Skapa vårt kommand/query
+        await using (var reader = await cmd.ExecuteReaderAsync()) // Kör vår kommando/query och inväntar resultatet.
+            while
+                (await reader
+                    .ReadAsync()) // Läser av 1 rad/objekt i taget ifrån resultatet och kommer avsluta loopen när det inte finns fler rader att läsa. 
+            {
+                customers.Add(new Customer
                 {
-                    Console.WriteLine($"Id: {reader.GetInt32(0)}," +
-                                      $"Name: {reader.GetString(1)}," +
-                                      $"email: {reader.GetString(2)}," +
-                                      $"phone_number: {reader.GetString(3)}," +
-                                      $"birthyear: {reader.GetInt32(4)}");
-                }
+                    Id = reader.GetInt32(0),
+                    Name = reader.IsDBNull(1) ? null : reader.GetString(1),
+                    Email = reader.IsDBNull(2) ? null : reader.GetString(2),
+                    PhoneNumber = reader.IsDBNull(3) ? null : reader.GetString(3),
+                    Birthyear = reader.GetInt32(4)
+                });
+            }
 
-            Console.WriteLine("done");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An error occurred: {ex.Message}");
-            Console.WriteLine(ex.StackTrace);
-        }
+        Console.WriteLine("done");
+        return customers;
     }
 }
