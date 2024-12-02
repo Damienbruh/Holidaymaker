@@ -5,6 +5,8 @@ public class HotellQueries
 {
     private NpgsqlDataSource _database;
 
+
+
     public HotellQueries(NpgsqlDataSource database)
     {
         _database = database;
@@ -21,15 +23,16 @@ public class HotellQueries
                 await using (var reader = await cmd.ExecuteReaderAsync()) // Kör vår kommando/query och inväntar resultatet.
                     while ( await reader.ReadAsync()) // Läser av 1 rad/objekt i taget ifrån resultatet och kommer avsluta loopen när det inte finns fler rader att läsa. 
                     {
-                        Console.WriteLine($"hotel_id: {reader.GetInt32(0)}," +
-                                          $"street_name: {reader.GetString(1)}," +
-                                          $"postal_code: {reader.GetString(2)}," +
-                                          $"city: {reader.GetString(3)}," +
-                                          $"region: {reader.GetInt32(4)}" +
-                                          $"country: {reader.GetString(3)}," +
-                                          $"distance_to_ski_slope: {reader.GetInt32(3)},");
+                        // Console.WriteLine($"hotel_id: {reader.GetInt32(0)}," +
+                        //                   $"street_name: {reader.GetString(1)}," +
+                        //                   $"postal_code: {reader.GetString(2)}," +
+                        //                   $"city: {reader.GetString(3)}," +
+                        //                   $"region: {reader.GetInt32(4)}" +
+                        //                   $"country: {reader.GetString(3)}," +
+                        //                   $"distance_to_ski_slope: {reader.GetInt32(3)},");
                                             
                     }
+            
         }
         catch (Exception e)
         {
