@@ -43,24 +43,24 @@ public class CustomerQueries
     {
         try
         {
-            var query = $"SELECT * FROM customers WHERE {columnName} = '{searchTerm} ILIKE @searchTerm'";
+            var query = $"SELECT * FROM customers WHERE {columnName} ILIKE @searchTerm";
             await using (var cmd = _database.CreateCommand(query))
             {
-                cmd.Parameters.AddWithValue("searchTerm", $"%{searchTerm}% ");
+                cmd.Parameters.AddWithValue("searchTerm", $"%{searchTerm}%");
 
                 await using (var reader = await cmd.ExecuteReaderAsync())
                 {
                     while (await reader.ReadAsync())
                     {
-                        Console.WriteLine($"customer_id: {reader.GetInt32(0)}, " +
-                                          $"name: {reader.GetString(1)}, " +
-                                          $"email: {reader.GetString(2)}, " +
-                                          $"phone_number: {reader.GetString(3)}, " +
-                                          $"birthyear: {reader.GetInt32(4)}. ");
+                        Console.WriteLine($"Id: {reader.GetInt32(0)}, " +
+                                          $"Name: {reader.GetString(1)}, " +
+                                          $"Email: {reader.GetString(2)}, " +
+                                          $"Phone: {reader.GetString(3)}, " +
+                                          $"BirthYear: {reader.GetInt32(4)}");
                     }
                 }
             }
-        }
+        } 
         catch (Exception ex)
         {
             Console.WriteLine($"An error occurred: {ex.Message}");
