@@ -48,7 +48,7 @@ public class Menu
             { MenuStateEnum.ManageCustomers, HandleManageCustomersMenu},
             { MenuStateEnum.TestingMenu, TestingMenuHandler}
         };
-        _menuState = MenuStateEnum.TestingMenu; //säger var vi startar menu state
+        _menuState = MenuStateEnum.LoggedOut; //säger var vi startar menu state
         _queryHandler = queryHandler;
     }
 
@@ -65,12 +65,24 @@ public class Menu
     {
         if (_menuHandlers.TryGetValue(_menuState, out var handler))
         {
-            await handler(); // can i get response first and pass in here?
+            await handler();
         }
         else
         {
             throw new Exception("no handler for menu");
         }
+    }
+
+    private string GetInput()
+    {
+        string? response = Console.ReadLine();
+
+        while (String.IsNullOrEmpty(response))
+        {
+            Console.WriteLine("invalid option try again");
+            response = Console.ReadLine();
+        }
+        return response;
     }
 
     private void PrintMenu()
@@ -92,20 +104,12 @@ public class Menu
     private async Task HandleLoggedOutMenu()
     {
         Console.WriteLine("please input your username");
-        string? username = Console.ReadLine();
+        string? username = GetInput();
         
-        while (String.IsNullOrEmpty(username))
-        {
-            Console.WriteLine("invalid option try again");
-            username = Console.ReadLine();
-        }
+       
         Console.WriteLine("please input your password");
-        string? password = Console.ReadLine();
-        while (String.IsNullOrEmpty(password))
-        {
-            Console.WriteLine("invalid option try again");
-            password = Console.ReadLine();
-        }
+        string? password = GetInput();
+        
 
         if (await _queryHandler.VerifyLoginHandler.VerifyLogin(username, password))
         {
@@ -123,15 +127,7 @@ public class Menu
     }
     private async Task HandleMainMenu()
     {
-        string? response = Console.ReadLine();
-
-        while (String.IsNullOrEmpty(response))
-        {
-            Console.WriteLine("invalid option try again");
-            response = Console.ReadLine();
-        }
-
-        switch (response)
+        switch (GetInput())
         {
             case "1": //view bookings
                 _menuState = MenuStateEnum.ViewBookings;
@@ -157,15 +153,7 @@ public class Menu
     private async Task HandleCreateBookingsMenu() {}
     private async Task HandleViewCustomersMenu()
     {
-        string? response = Console.ReadLine();
-
-        while (String.IsNullOrEmpty(response))
-        {
-            Console.WriteLine("invalid option try again");
-            response = Console.ReadLine();
-        }
-
-        switch (response)
+        switch (GetInput())
         {
             case "1": //view all customers
                 await _queryHandler.CustomerQueries.AllCustomers();
@@ -190,15 +178,7 @@ public class Menu
 
     private async Task HandleManageCustomersMenu()
     {
-        string? response = Console.ReadLine();
-
-        while (String.IsNullOrEmpty(response))
-        {
-            Console.WriteLine("invalid option try again");
-            response = Console.ReadLine();
-        }
-
-        switch (response)
+        switch (GetInput())
         {
             case "1": //view customer
                 _menuState = MenuStateEnum.ViewCustomers;
@@ -214,15 +194,7 @@ public class Menu
 
     private async Task TestingMenuHandler()
     {
-        string? response = Console.ReadLine();
-
-        while (String.IsNullOrEmpty(response))
-        {
-            Console.WriteLine("invalid option try again");
-            response = Console.ReadLine();
-        }
-        
-        switch (response)
+        switch (GetInput())
         {
             case "1": //test 1
                 
