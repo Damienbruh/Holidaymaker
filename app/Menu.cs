@@ -27,7 +27,7 @@ public class Menu
         // { MenuStateEnum.CreateBookings, new []{""}},
         { MenuStateEnum.ViewCustomers, new []{"1. view all customers","2. find customer by id","3. find customer by name", "4. edit customer by id", "5. remove customer by id","6. return"}},
         { MenuStateEnum.ManageCustomers, new []{"1. view customers", "2. add customer", "3. return"}},
-        { MenuStateEnum.TestingMenu, new []{"1. test command 1", "2. test command 2", "3. test command 3"}}
+        { MenuStateEnum.TestingMenu, new []{"1. damien test command", "2. david test command", "3. kasper test command", "4. noel test command"}}
     };
     private readonly Dictionary<MenuStateEnum, Func<Task>> _menuHandlers;
     private MenuStateEnum _menuState;
@@ -65,12 +65,24 @@ public class Menu
     {
         if (_menuHandlers.TryGetValue(_menuState, out var handler))
         {
-            await handler(); // can i get response first and pass in here?
+            await handler();
         }
         else
         {
             throw new Exception("no handler for menu");
         }
+    }
+
+    private string GetInput()
+    {
+        string? response = Console.ReadLine();
+
+        while (String.IsNullOrEmpty(response))
+        {
+            Console.WriteLine("invalid option try again");
+            response = Console.ReadLine();
+        }
+        return response;
     }
 
     private void PrintMenu()
@@ -92,20 +104,12 @@ public class Menu
     private async Task HandleLoggedOutMenu()
     {
         Console.WriteLine("please input your username");
-        string? username = Console.ReadLine();
+        string? username = GetInput();
         
-        while (String.IsNullOrEmpty(username))
-        {
-            Console.WriteLine("invalid option try again");
-            username = Console.ReadLine();
-        }
+       
         Console.WriteLine("please input your password");
-        string? password = Console.ReadLine();
-        while (String.IsNullOrEmpty(password))
-        {
-            Console.WriteLine("invalid option try again");
-            password = Console.ReadLine();
-        }
+        string? password = GetInput();
+        
 
         if (await _queryHandler.VerifyLoginHandler.VerifyLogin(username, password))
         {
@@ -123,15 +127,7 @@ public class Menu
     }
     private async Task HandleMainMenu()
     {
-        string? response = Console.ReadLine();
-
-        while (String.IsNullOrEmpty(response))
-        {
-            Console.WriteLine("invalid option try again");
-            response = Console.ReadLine();
-        }
-
-        switch (response)
+        switch (GetInput())
         {
             case "1": //view bookings
                 _menuState = MenuStateEnum.ViewBookings;
@@ -157,15 +153,7 @@ public class Menu
     private async Task HandleCreateBookingsMenu() {}
     private async Task HandleViewCustomersMenu()
     {
-        string? response = Console.ReadLine();
-
-        while (String.IsNullOrEmpty(response))
-        {
-            Console.WriteLine("invalid option try again");
-            response = Console.ReadLine();
-        }
-
-        switch (response)
+        switch (GetInput())
         {
             case "1": //view all customers
                 await _queryHandler.CustomerQueries.AllCustomers();
@@ -190,15 +178,7 @@ public class Menu
 
     private async Task HandleManageCustomersMenu()
     {
-        string? response = Console.ReadLine();
-
-        while (String.IsNullOrEmpty(response))
-        {
-            Console.WriteLine("invalid option try again");
-            response = Console.ReadLine();
-        }
-
-        switch (response)
+        switch (GetInput())
         {
             case "1": //view customer
                 _menuState = MenuStateEnum.ViewCustomers;
@@ -214,23 +194,22 @@ public class Menu
 
     private async Task TestingMenuHandler()
     {
-        string? response = Console.ReadLine();
-
-        while (String.IsNullOrEmpty(response))
+        switch (GetInput())
         {
-            Console.WriteLine("invalid option try again");
-            response = Console.ReadLine();
-        }
-        
-        switch (response)
-        {
-            case "1": //test 1
+            case "1": //damien testing
+                await _queryHandler.CustomerQueries.SearchCustomer("name", "Thom");
+                break;
+            case "2": //david testing
+                
+                foreach (var customer in await _queryHandler.TestQueries.AllCustomers())
+                {
+                    Console.WriteLine($"Id: {customer.Id}, Name: {customer.Name}, Email: {customer.Email}, PhoneNumber: {customer.PhoneNumber}, BirthYear: {customer.Birthyear}");
+                }
+                break;
+            case "3": //kasper testing
                 
                 break;
-            case "2": //test 2
-                
-                break;
-            case "3": //test 3
+            case "4": //noel testing
                 
                 break;
         }
