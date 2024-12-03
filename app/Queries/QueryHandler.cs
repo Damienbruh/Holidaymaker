@@ -12,6 +12,7 @@ public class QueryHandler
     public CustomerQueries CustomerQueries { get; }
     public HotelAndFeaturesQueries HotelAndFeaturesQueries { get; }
     public BookingToHotelQueryHandler BookingToHotelQueryHandler { get; }
+    public BookingJoinRoomsQueryHandler BookingJoinRoomsQueryHandler { get; }
     
     public BookingQueries BookingQueries { get; }
     public QueryHandler(NpgsqlDataSource database)
@@ -26,5 +27,6 @@ public class QueryHandler
         BookingQueries = new BookingQueries(_database);
         HotelAndFeaturesQueries = new(_database);
         BookingToHotelQueryHandler = new(_database);
+        BookingJoinRoomsQueryHandler = new(_database);
     }
 }
