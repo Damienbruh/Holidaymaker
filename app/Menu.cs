@@ -220,10 +220,11 @@ public class Menu
                 _menuState = MenuStateEnum.ResultMenu;
                 break;
             case "3": //kasper testing
-                _queryHandler.HotellQueries.AllHotels();
+                await _queryHandler.HotellQueries.AllHotels();
                 break;
             case "4": //noel testing
-                
+                //await _queryHandler.BookingToHotelQueryHandler.GetAvailableRoomsForHotel(9,new DateTime(2024, 12,14), new DateTime(2024, 12, 21));
+                //await _queryHandler.BookingToHotelQueryHandler.GetAvailableRooms(new DateTime(2024, 12,14), new DateTime(2024, 12, 21));
                 break;
         }
         

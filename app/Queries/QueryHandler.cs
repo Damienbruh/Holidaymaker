@@ -1,3 +1,4 @@
+using app.Queries.TableObjects;
 using Npgsql;
 
 namespace app.Queries;
@@ -9,6 +10,8 @@ public class QueryHandler
     public VerifyLoginHandler VerifyLoginHandler { get; }
     public HotellQueries HotellQueries { get; }
     public CustomerQueries CustomerQueries { get; }
+    public HotelAndFeaturesQueries HotelAndFeaturesQueries { get; }
+    public BookingToHotelQueryHandler BookingToHotelQueryHandler { get; }
     
     public BookingQueries BookingQueries { get; }
     public QueryHandler(NpgsqlDataSource database)
@@ -21,5 +24,7 @@ public class QueryHandler
         HotellQueries = new(_database);
         CustomerQueries = new(_database);
         BookingQueries = new BookingQueries(_database);
+        HotelAndFeaturesQueries = new(_database);
+        BookingToHotelQueryHandler = new(_database);
     }
 }
