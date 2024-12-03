@@ -10,9 +10,30 @@ public class BookingQueries
     public BookingQueries(NpgsqlDataSource database)
     {
         _database = database;
-        SpecificBookings();
     }
 
+    
+    public async Task<int> InsertBooking(DateTime startDate, DateTime endDate)
+    {
+ 
+
+        var query = @"INSERT INTO bookings (start_date, end_date, status)
+                  VALUES ($1, $2, 'active')
+                  RETURNING bookings_id";
+        await using (var cmd = _database.CreateCommand(query))
+        {
+            cmd.Parameters.AddWithValue(startDate);
+            cmd.Parameters.AddWithValue(endDate);
+            
+            var newId = await cmd.ExecuteScalarAsync();
+            
+            return Convert.ToInt32(newId);
+
+        }
+    } 
+    
+    
+    
     public async void SpecificBookings()
     {
         try

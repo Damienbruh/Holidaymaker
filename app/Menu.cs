@@ -228,6 +228,7 @@ public class Menu
                 //await _queryHandler.HotelAndFeaturesQueries.AllHotels();
                 //await _queryHandler.HotelAndFeaturesQueries.SearchBy();
                 //await _queryHandler.BookingJoinRoomsQueryHandler.InsertBookingJoinRoom(3, new List<int>{ 4, 5, 6 });
+                await _queryHandler.BookingQueries.InsertBooking(new DateTime(2024, 12, 14), new DateTime(2024, 12, 21));
                 break;
         }
         
