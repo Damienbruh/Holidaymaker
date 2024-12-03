@@ -52,7 +52,7 @@ public class Menu
             { MenuStateEnum.ResultMenu, ResultMenuHandler},
             { MenuStateEnum.BookingMenu, BookingMenuHandler}
         };
-        _menuState = MenuStateEnum.Main; //säger var vi startar menu state
+        _menuState = MenuStateEnum.LoggedOut; //säger var vi startar menu state
         _queryHandler = queryHandler;
         _resultsMenu = new ResultsMenu(_queryHandler);
     }
