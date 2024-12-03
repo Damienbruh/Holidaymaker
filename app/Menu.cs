@@ -212,6 +212,7 @@ public class Menu
         {
             input = GetInput("please input start date in format yyyy-mm-dd");
         }
+        input = GetInput("please input start date in format yyyy-mm-dd");
         DateTime endDate;
         while (!DateTime.TryParse(input, out endDate))
         {
@@ -228,6 +229,7 @@ public class Menu
             Console.WriteLine("room number: " + room.RoomNumber + "  |  ");
         }
 
+        _menuState = MenuStateEnum.Main;
     }
 
     private async Task TestingMenuHandler()
