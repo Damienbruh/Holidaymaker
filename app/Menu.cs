@@ -160,13 +160,16 @@ public class Menu
         switch (GetInput())
         {
             case "1": //add customer
-                Console.WriteLine("added customer 100% big true");
+                await AddCustomer();
                 break;
             case "2": //find customer by name
+                await SearchCustomerByName();
                 break;
             case "3": //edit customer by id
+                await EditCustomerById();
                 break;
             case "4": //remove customer by id
+                await RemoveCustomerById();
                 break;
             case "5": //return
                 _menuState = MenuStateEnum.Main;
@@ -174,6 +177,76 @@ public class Menu
         }
     }
 
+    private async Task AddCustomer()
+    {
+        Console.WriteLine("Please enter your customer name");
+            string? name = GetInput();
+
+            Console.WriteLine("please input your customer email");
+            string? email = GetInput();
+            
+        Console.WriteLine("please input your customer phonenumber");
+            string? phone = GetInput();
+            
+        Console.WriteLine("please input your birth year");
+        if (int.TryParse(GetInput(), out int birthYear))
+        {
+            await _queryHandler.CustomerQueries.InsertCustomer(name, email, phone, birthYear);
+            Console.WriteLine("customer added"); 
+        }
+        else
+        {
+            Console.WriteLine("invalid customer birth year, try again");
+        }
+    }
+
+    private async Task SearchCustomerByName()
+    {
+        Console.WriteLine("Please enter the name you want to search for");
+        string? name = GetInput();
+        
+        await _queryHandler.CustomerQueries.SearchCustomer("name", name);
+    }
+
+    private async Task EditCustomerById()
+    {
+        Console.WriteLine("Please enter the customer ID you want to edit");
+        if (int.TryParse(GetInput(), out int customerId))
+        {
+            Console.WriteLine("Enter new name (leave blank for no input)");
+            string name = Console.ReadLine();
+            
+            Console.WriteLine("Enter new email (leave blank for no input)");
+            string email = Console.ReadLine();
+            
+            Console.WriteLine("Enter new phone number (leave blank for no input)");
+            string phone = Console.ReadLine();
+            
+            Console.WriteLine("Enter new birth year (leave blank for no input)");
+            string birthYearInput = Console.ReadLine();
+            int? birthYear = string.IsNullOrWhiteSpace(birthYearInput) ? null : int.Parse(birthYearInput);
+            Console.WriteLine("Customer updated");
+        }
+        else
+        {
+            Console.WriteLine("invalid customer id");
+        }
+    }
+    
+    private async Task RemoveCustomerById()
+    {
+        Console.WriteLine("Please enter the customer ID you want to remove");
+        if (int.TryParse(GetInput(), out int customerId))
+        {
+            await _queryHandler.CustomerQueries.DeleteCustomer(customerId);
+            Console.WriteLine("customer removed");
+        }
+        else
+        {
+            Console.WriteLine("invalid customer ID you want to remove");
+        }
+    }
+    
     private async Task BookingMenuHandler()
     {
         switch (GetInput())
