@@ -87,4 +87,10 @@ public class HotellQueries
         Console.WriteLine("done");
         return hotels;
     }
+
+    /*public async Task<List<Hotel>> InsertHotel()
+    {
+        
+    }*/
 }
+
