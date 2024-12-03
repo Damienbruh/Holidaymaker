@@ -2,6 +2,8 @@ using System.Xml.Xsl;
 using app.Queries;
 using app.Queries.TableObjects;
 using app.Menus;
+using Sprache;
+
 namespace app;
 public class Menu
 {
@@ -77,8 +79,9 @@ public class Menu
         }
     }
 
-    private string GetInput()
+    private string GetInput(string message ="")
     {
+        Console.WriteLine(message);
         string? response = Console.ReadLine();
 
         while (String.IsNullOrEmpty(response))
@@ -176,14 +179,54 @@ public class Menu
         switch (GetInput())
         {
             case "1": //search by city
-                
+                List<HotelAndFeatures> hotels = await _queryHandler.HotelAndFeaturesQueries.SearchBy("city", GetInput("enter city to search by: "));
+                foreach (var hotel in hotels)
+                {
+                    Console.Write("hotel id: " + hotel.HotelId + "  |  ");
+                    Console.Write("rating: " + hotel.Rating + "  |  ");
+                    Console.Write("distance to ski: " + hotel.DistanceToSkiSlope + "  |  ");
+                    Console.Write("distance to center: " + hotel.DistanceToTownCenter + "  |  ");
+                    Console.Write("feature: " + hotel.Feature + "  |  ");
+                    Console.Write("street address: " + hotel.StreetName + "  |  ");
+                    Console.Write("city: " + hotel.City + "  |  ");
+                    Console.WriteLine("country: " + hotel.Country);
+                }
                 break;
             case "2": //search by distance to ski slope
                 break;
             case "3"://return
                 _menuState = MenuStateEnum.Main;
-                break;
+                return;
         }
+
+        string input = GetInput("please select a hotel by typing its id");
+        int hotelId;
+        while (!int.TryParse(input, out hotelId))
+        {
+            input = GetInput("please select a hotel by typing its id");
+        }
+
+        input = GetInput("please input start date in format yyyy-mm-dd");
+        DateTime startDate;
+        while (!DateTime.TryParse(input, out startDate))
+        {
+            input = GetInput("please input start date in format yyyy-mm-dd");
+        }
+        DateTime endDate;
+        while (!DateTime.TryParse(input, out endDate))
+        {
+            input = GetInput("please input end date in format yyyy-mm-dd");
+        }
+
+        List<BookingToHotell> rooms =
+            await _queryHandler.BookingToHotelQueryHandler.GetAvailableRoomsForHotel(hotelId, startDate, endDate);
+        foreach (var room in rooms)
+        {
+            Console.Write("hotel id: " + room.HotelId + "  |  ");
+            Console.Write("room id: " + room.RoomId + "  |  ");
+            Console.Write("hotel id: " + room.HotelId + "  |  "); 
+        }
+
     }
 
     private async Task TestingMenuHandler()
@@ -205,11 +248,11 @@ public class Menu
                 break;
             case "4": //noel testing
                 //await _queryHandler.BookingToHotelQueryHandler.GetAvailableRoomsForHotel(9,new DateTime(2024, 12,14), new DateTime(2024, 12, 21));
-                //await _queryHandler.BookingToHotelQueryHandler.GetAvailableRooms(new DateTime(2024, 12,14), new DateTime(2024, 12, 21));
+                await _queryHandler.BookingToHotelQueryHandler.GetAvailableRooms(new DateTime(2024, 12,14), new DateTime(2024, 12, 21));
                 //await _queryHandler.HotelAndFeaturesQueries.AllHotels();
                 //await _queryHandler.HotelAndFeaturesQueries.SearchBy();
                 //await _queryHandler.BookingJoinRoomsQueryHandler.InsertBookingJoinRoom(3, new List<int>{ 4, 5, 6 });
-                await _queryHandler.BookingQueries.InsertBooking(new DateTime(2024, 12, 14), new DateTime(2024, 12, 21));
+                //await _queryHandler.BookingQueries.InsertBooking(new DateTime(2024, 12, 14), new DateTime(2024, 12, 21));
                 break;
             case "5":
                 _menuState = MenuStateEnum.Main;

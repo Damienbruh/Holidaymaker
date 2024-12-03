@@ -2,13 +2,12 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 17.2
--- Dumped by pg_dump version 17.2
+-- Dumped from database version 16.4
+-- Dumped by pg_dump version 16.4
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -225,10 +224,10 @@ CREATE VIEW public.booking_to_hotels_view AS
     bookings.start_date,
     bookings.end_date,
     bookings.status
-   FROM (((public.hotels
-     JOIN public.rooms ON ((hotels.hotel_id = rooms.hotel_fk)))
-     JOIN public.bookings_join_rooms ON ((rooms.room_id = bookings_join_rooms.rooms_fk)))
-     JOIN public.bookings ON ((bookings_join_rooms.booking_fk = bookings.bookings_id)));
+   FROM (((public.rooms
+     LEFT JOIN public.hotels ON ((rooms.hotel_fk = hotels.hotel_id)))
+     LEFT JOIN public.bookings_join_rooms ON ((rooms.room_id = bookings_join_rooms.rooms_fk)))
+     LEFT JOIN public.bookings ON ((bookings_join_rooms.booking_fk = bookings.bookings_id)));
 
 
 ALTER VIEW public.booking_to_hotels_view OWNER TO postgres;
@@ -1135,7 +1134,7 @@ COPY public.rooms (room_id, size, price, hotel_fk, room_number) FROM stdin;
 -- Name: addons_addons_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.addons_addons_id_seq', 1, false);
+SELECT pg_catalog.setval('public.addons_addons_id_seq', 4, true);
 
 
 --
@@ -1149,14 +1148,14 @@ SELECT pg_catalog.setval('public.admins_id_seq', 1, false);
 -- Name: bookings_bookings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.bookings_bookings_id_seq', 1, false);
+SELECT pg_catalog.setval('public.bookings_bookings_id_seq', 53, true);
 
 
 --
 -- Name: customers_customer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.customers_customer_id_seq', 1, false);
+SELECT pg_catalog.setval('public.customers_customer_id_seq', 200, true);
 
 
 --
@@ -1170,14 +1169,14 @@ SELECT pg_catalog.setval('public.hotel_features_hotel_features_id_seq', 4, true)
 -- Name: hotels_address_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.hotels_address_id_seq', 1, false);
+SELECT pg_catalog.setval('public.hotels_address_id_seq', 25, true);
 
 
 --
 -- Name: rooms_room_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.rooms_room_id_seq', 1, false);
+SELECT pg_catalog.setval('public.rooms_room_id_seq', 250, true);
 
 
 --

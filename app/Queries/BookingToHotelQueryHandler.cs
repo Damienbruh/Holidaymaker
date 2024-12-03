@@ -28,11 +28,11 @@ public class BookingToHotelQueryHandler
         List<BookingToHotell> availableRooms = new List<BookingToHotell>();
 
         await using var cmd = _database.CreateCommand(@"SELECT * FROM booking_to_hotels_view WHERE hotel_id = $1
-                                                                    AND room_id IN(SELECT room_id FROM booking_to_hotels_view 
-                                                                    where(($2 NOT BETWEEN start_date and end_date)
-                                                                    AND ($3 NOT BETWEEN start_date and end_date))
-                                                                    AND (($2 NOT BETWEEN end_date and start_date)
-                                                                    AND ($3 NOT BETWEEN end_date and start_date)))");
+                                                                    AND room_id NOT IN(SELECT room_id FROM booking_to_hotels_view 
+                                                                    where(($2 BETWEEN start_date and end_date)
+                                                                    AND ($3 BETWEEN start_date and end_date))
+                                                                    AND (($2 BETWEEN end_date and start_date)
+                                                                    AND ($3 BETWEEN end_date and start_date)))");
         cmd.Parameters.AddWithValue(hotel_id);
         cmd.Parameters.AddWithValue(endDate);
         cmd.Parameters.AddWithValue(startDate);
@@ -46,8 +46,6 @@ public class BookingToHotelQueryHandler
                  Size = reader.GetString(10),
                  Price = reader.GetInt32(11),
                  RoomNumber = reader.GetInt32(12),
-                 StartDate = reader.GetDateTime(14).ToString(),
-                 EndDate = reader.GetDateTime(15).ToString(),
              });   
         }
 
@@ -58,8 +56,6 @@ public class BookingToHotelQueryHandler
             Console.Write(room.Size  + "  |  ");
             Console.Write(room.Price  + "  |  ");
             Console.WriteLine(room.RoomNumber  + "  |  ");
-            Console.Write(room.StartDate + "  |  ");
-            Console.WriteLine(room.EndDate + "  |  ");
         }
 
         Console.ReadLine();
@@ -70,9 +66,9 @@ public class BookingToHotelQueryHandler
         List<BookingToHotell> availableRooms = new List<BookingToHotell>();
 
         await using var cmd = _database.CreateCommand(@"SELECT * FROM booking_to_hotels_view 
-                                                                     WHERE room_id IN(SELECT room_id FROM booking_to_hotels_view 
-                                                                     where(($1 NOT BETWEEN start_date and end_date) AND ($2 NOT BETWEEN start_date and end_date))
-                                                                     AND (($1 NOT BETWEEN end_date and start_date) AND ($2 NOT BETWEEN end_date and start_date)))");
+                                                                     WHERE room_id NOT IN(SELECT room_id FROM booking_to_hotels_view 
+                                                                     where(($1 BETWEEN start_date and end_date) AND ($2 BETWEEN start_date and end_date))
+                                                                     AND (($1 BETWEEN end_date and start_date) AND ($2 BETWEEN end_date and start_date)))");
         cmd.Parameters.AddWithValue(endDate);
         cmd.Parameters.AddWithValue(startDate);
         await using var reader = await cmd.ExecuteReaderAsync();
@@ -85,8 +81,6 @@ public class BookingToHotelQueryHandler
                 Size = reader.GetString(10),
                 Price = reader.GetInt32(11),
                 RoomNumber = reader.GetInt32(12),
-                StartDate = reader.GetDateTime(14).ToString(),
-                EndDate = reader.GetDateTime(15).ToString()
             });   
         }
 
@@ -96,9 +90,8 @@ public class BookingToHotelQueryHandler
             Console.Write(room.RoomId  + "  |  ");
             Console.Write(room.Size  + "  |  ");
             Console.Write(room.Price  + "  |  ");
-            Console.Write(room.RoomNumber  + "  |  ");
-            Console.Write(room.StartDate + "  |  ");
-            Console.WriteLine(room.EndDate + "  |  ");
+            Console.WriteLine(room.RoomNumber  + "  |  ");
+
         }
 
         Console.ReadLine();
