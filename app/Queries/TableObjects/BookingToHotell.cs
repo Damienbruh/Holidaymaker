@@ -21,7 +21,7 @@ public class BookingToHotell
     
     //bookings
     // public int BookingId { get; set; }
-     public string? StartDate { get; set; }
-     public string? EndDate { get; set; }
+    // public string? StartDate { get; set; }
+    // public string? EndDate { get; set; }
     // public string? Status { get; set; }
 }

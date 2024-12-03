@@ -99,19 +99,20 @@ public class HotelAndFeaturesQueries
                 }
             }
         }
-        foreach (var hotel in hotels)
-        {
-            Console.Write(hotel.HotelId + "  |  ");
-            Console.Write(hotel.StreetName  + "  |  ");
-            Console.Write(hotel.City  + "  |  ");
-            Console.Write(hotel.Country  + "  |  ");
-            Console.Write(hotel.Rating  + "  |  ");
-            Console.Write(hotel.FeatureId + "  |  ");
-            Console.WriteLine(hotel.Feature + "  |  ");
-        }
+        // foreach (var hotel in hotels)
+        // {
+        //     Console.Write(hotel.HotelId + "  |  ");
+        //     Console.Write(hotel.StreetName  + "  |  ");
+        //     Console.Write(hotel.City  + "  |  ");
+        //     Console.Write(hotel.Country  + "  |  ");
+        //     Console.Write(hotel.Rating  + "  |  ");
+        //     Console.Write(hotel.FeatureId + "  |  ");
+        //     Console.WriteLine(hotel.Feature + "  |  ");
+        // }
 
-        Console.ReadLine();
+        
         Console.WriteLine("done");
+        Console.ReadLine();
         return hotels;
     }
 }

@@ -222,9 +222,10 @@ public class Menu
             await _queryHandler.BookingToHotelQueryHandler.GetAvailableRoomsForHotel(hotelId, startDate, endDate);
         foreach (var room in rooms)
         {
-            Console.Write("hotel id: " + room.HotelId + "  |  ");
             Console.Write("room id: " + room.RoomId + "  |  ");
-            Console.Write("hotel id: " + room.HotelId + "  |  "); 
+            Console.Write("price: " + room.Price + "  |  ");
+            Console.Write("room size: " + room.Size + "  |  ");
+            Console.WriteLine("room number: " + room.RoomNumber + "  |  ");
         }
 
     }
