@@ -39,7 +39,7 @@ public class CustomerQueries
         }
     }
 
-    public async Task SearchCustomer(string columnName, string searchTerm)// Add a "customer does not exist"
+    public async Task SearchCustomer(string columnName, string searchTerm)
     {
         try
         {
@@ -50,6 +50,11 @@ public class CustomerQueries
 
                 await using (var reader = await cmd.ExecuteReaderAsync())
                 {
+                    if (!reader.HasRows)
+                    {
+                        Console.WriteLine("Customer does not exist");
+                        return;
+                    }
                     while (await reader.ReadAsync())
                     {
                         Console.WriteLine($"Id: {reader.GetInt32(0)}, " +
