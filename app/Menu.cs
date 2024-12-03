@@ -1,6 +1,7 @@
 using System.Xml.Xsl;
 using app.Queries;
 using app.Queries.TableObjects;
+using app.Menus;
 namespace app;
 public class Menu
 {
@@ -9,7 +10,7 @@ public class Menu
     
     
     //här specifierar vi vilka olika states meny kan vara i
-    enum MenuStateEnum
+    public enum MenuStateEnum
     {
         LoggedOut,
         Main,
@@ -39,6 +40,8 @@ public class Menu
     private QueryHandler _queryHandler;
     private bool _menuLoop = true;
 
+    private ResultsMenu _resultsMenu;
+    
     public Menu(QueryHandler queryHandler)
     {
         //här lägger vi till vilken function som skall callas vid vilket state, viktigt att functionen är en async task. ska leta efter bättre lösning
@@ -55,6 +58,7 @@ public class Menu
         };
         _menuState = MenuStateEnum.TestingMenu; //säger var vi startar menu state
         _queryHandler = queryHandler;
+        _resultsMenu = new ResultsMenu(_queryHandler);
     }
 
     public async Task MenuMain()
@@ -235,6 +239,13 @@ public class Menu
     private async Task ResultMenuHandler()
     {
         List<Customer> customers = await _queryHandler.TestQueries.TestQuery();
+
+        // foreach(var prop in customers[1].GetType().GetProperties()) {
+        //     Console.WriteLine("{0}-{1}", prop.Name, prop.Name.GetType());
+        // }
+
+
+        //Console.ReadLine();
         int maxIdLength = customers.Max(c => c.Id.ToString().Length);
         int maxNameLength = customers.Max(c => (c.Name ?? "").Length);
         int maxEmailLength = customers.Max(c => (c.Email ?? "").Length);
