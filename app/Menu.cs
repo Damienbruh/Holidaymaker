@@ -14,25 +14,21 @@ public class Menu
     {
         LoggedOut,
         Main,
-        ViewBookings,
-        CreateBookings,
-        ViewCustomers,
         ManageCustomers,
         TestingMenu,
         ResultMenu,
+        BookingMenu
     }
 
     //här specifierar vi vad varje menystate ska visa
     private readonly Dictionary<MenuStateEnum, String[]> _menuOptions = new()
     {
         { MenuStateEnum.LoggedOut, new []{"please input you username and password"} },
-        { MenuStateEnum.Main, new []{"1. view bookings","2. create new booking", "3. customer management","4. logOut","5. quit", "6. testing menu"}},
-        // { MenuStateEnum.ViewBookings, new []{""}}, 
-        // { MenuStateEnum.CreateBookings, new []{""}},
-        { MenuStateEnum.ViewCustomers, new []{"1. view all customers","2. find customer by id","3. find customer by name", "4. edit customer by id", "5. remove customer by id","6. return"}},
-        { MenuStateEnum.ManageCustomers, new []{"1. view customers", "2. add customer", "3. return"}},
-        { MenuStateEnum.TestingMenu, new []{"1. damien test command", "2. david test command", "3. kasper test command", "4. noel test command"}},
-        { MenuStateEnum.ResultMenu, new []{"arrow keys to navigate", "enter to confirm", "backspace to return"}}
+        { MenuStateEnum.Main, new []{"1. customer management","2. create booking", "3. logOut","4. quit", "5. testing menu"}},
+        { MenuStateEnum.ManageCustomers, new []{"1. add customer","2. find customer by name","3.edit customer by id","4. remove customer by id", "5. return"}},
+        { MenuStateEnum.TestingMenu, new []{"1. damien test command", "2. david test command", "3. kasper test command", "4. noel test command", "5. return"}},
+        { MenuStateEnum.ResultMenu, new []{"arrow keys to navigate", "enter to confirm", "backspace to return"}},
+        { MenuStateEnum.BookingMenu, new []{"1. search by city", "2. search by distance"}}
     };
     private readonly Dictionary<MenuStateEnum, Func<Task>> _menuHandlers;
     private MenuStateEnum _menuState;
@@ -49,14 +45,12 @@ public class Menu
         {
             { MenuStateEnum.LoggedOut, HandleLoggedOutMenu},
             { MenuStateEnum.Main, HandleMainMenu},
-            { MenuStateEnum.ViewBookings, HandleViewBookingsMenu}, 
-            { MenuStateEnum.CreateBookings, HandleCreateBookingsMenu},
-            { MenuStateEnum.ViewCustomers, HandleViewCustomersMenu},
             { MenuStateEnum.ManageCustomers, HandleManageCustomersMenu},
             { MenuStateEnum.TestingMenu, TestingMenuHandler},
-            { MenuStateEnum.ResultMenu, ResultMenuHandler}
+            { MenuStateEnum.ResultMenu, ResultMenuHandler},
+            { MenuStateEnum.BookingMenu, BookingMenuHandler}
         };
-        _menuState = MenuStateEnum.TestingMenu; //säger var vi startar menu state
+        _menuState = MenuStateEnum.Main; //säger var vi startar menu state
         _queryHandler = queryHandler;
         _resultsMenu = new ResultsMenu(_queryHandler);
     }
@@ -140,51 +134,20 @@ public class Menu
     {
         switch (GetInput())
         {
-            case "1": //view bookings
-                _menuState = MenuStateEnum.ViewBookings;
+            case "1": //customer management
+                _menuState = MenuStateEnum.ManageCustomers;
                 break;
             case "2": //create booking
-                _menuState = MenuStateEnum.CreateBookings;
+                _menuState = MenuStateEnum.BookingMenu;
                 break;
-            case "3": //customer management
-                _menuState = MenuStateEnum.ManageCustomers;
-                break;
-            case "4": //logout
+            case "3": //logout
                 _menuState = MenuStateEnum.LoggedOut;
                 break;
-            case "5": //quit
+            case "4": //quit
                 _menuLoop = false;
                 break;
-            case "6":
+            case "5": //testing
                 _menuState = MenuStateEnum.TestingMenu;
-                break;
-            case "7": //testingkasper
-                break;
-        }
-    }
-    private async Task HandleViewBookingsMenu() {}
-    private async Task HandleCreateBookingsMenu() {}
-    private async Task HandleViewCustomersMenu()
-    {
-        switch (GetInput())
-        {
-            case "1": //view all customers
-                await _queryHandler.CustomerQueries.AllCustomers();
-                break;
-            case "2": //find customer by id
-                Console.WriteLine("not implemented");
-                break;
-            case "3": //find customer by name
-                Console.WriteLine("not implemented");
-                break;
-            case "4": //edit customer by id
-                Console.WriteLine("not implemented");
-                break;
-            case "5": //remove customer by id
-                _menuLoop = false;
-                break;
-            case "6":
-                _menuState = MenuStateEnum.ManageCustomers;
                 break;
         }
     }
@@ -193,13 +156,31 @@ public class Menu
     {
         switch (GetInput())
         {
-            case "1": //view customer
-                _menuState = MenuStateEnum.ViewCustomers;
-                break;
-            case "2": //add customer
+            case "1": //add customer
                 Console.WriteLine("added customer 100% big true");
                 break;
-            case "3": //return
+            case "2": //find customer by name
+                break;
+            case "3": //edit customer by id
+                break;
+            case "4": //remove customer by id
+                break;
+            case "5": //return
+                _menuState = MenuStateEnum.Main;
+                break;
+        }
+    }
+
+    private async Task BookingMenuHandler()
+    {
+        switch (GetInput())
+        {
+            case "1": //search by city
+                
+                break;
+            case "2": //search by distance to ski slope
+                break;
+            case "3"://return
                 _menuState = MenuStateEnum.Main;
                 break;
         }
@@ -229,6 +210,9 @@ public class Menu
                 //await _queryHandler.HotelAndFeaturesQueries.SearchBy();
                 //await _queryHandler.BookingJoinRoomsQueryHandler.InsertBookingJoinRoom(3, new List<int>{ 4, 5, 6 });
                 await _queryHandler.BookingQueries.InsertBooking(new DateTime(2024, 12, 14), new DateTime(2024, 12, 21));
+                break;
+            case "5":
+                _menuState = MenuStateEnum.Main;
                 break;
         }
         
