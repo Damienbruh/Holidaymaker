@@ -1,3 +1,4 @@
+using System.IO.Pipelines;
 using Npgsql;
 using app.Queries.TableObjects;
 namespace app.Queries;
@@ -10,7 +11,19 @@ public class TestQueries
     {
         _database = database;
     }
-    
+
+
+    public async Task GetAddons()
+    {
+        await using (var cmd = _database.CreateCommand("SELECT * FROM addons"))
+        await using (var reader = await cmd.ExecuteReaderAsync())
+            while (await reader.ReadAsync())
+            {
+                Console.WriteLine($"addon id: {reader.GetInt32(0)}" +
+                                  $"addon: {reader.GetString(1)}" +
+                                  $"price: {reader.GetInt32(2)}");
+            }
+    }
 
     public async Task<List<Customer>> TestQuery()
     {

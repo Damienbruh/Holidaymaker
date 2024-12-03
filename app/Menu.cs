@@ -294,14 +294,100 @@ public class Menu
 
         List<BookingToHotell> rooms =
             await _queryHandler.BookingToHotelQueryHandler.GetAvailableRoomsForHotel(hotelId, startDate, endDate);
-        foreach (var room in rooms)
+        
+        int bookingId = await _queryHandler.BookingQueries.InsertBooking(startDate, endDate);
+
+        bool roomJoin = true;
+        
+        while (roomJoin)
         {
-            Console.Write("room id: " + room.RoomId + "  |  ");
-            Console.Write("price: " + room.Price + "  |  ");
-            Console.Write("room size: " + room.Size + "  |  ");
-            Console.WriteLine("room number: " + room.RoomNumber + "  |  ");
+            foreach (var room in rooms)
+            {
+                Console.Write("room id: " + room.RoomId + "  |  ");
+                Console.Write("price: " + room.Price + "  |  ");
+                Console.Write("room size: " + room.Size + "  |  ");
+                Console.WriteLine("room number: " + room.RoomNumber + "  |  ");
+            }
+            
+            input = GetInput("please select a room to add to booking by typing its id");
+            int roomId;
+            while (!int.TryParse(input, out roomId))
+            {
+                input = GetInput("please select a room to add to booking by typing its id");
+            }
+
+            switch (GetInput("would you like to add more rooms or exit? 1. add 2. exit"))
+            {
+                case "1":
+                    await _queryHandler.BookingJoinRoomsQueryHandler.InsertBookingJoinRoom(bookingId, roomId);
+                    break;
+                case"2":
+                    await _queryHandler.BookingJoinRoomsQueryHandler.InsertBookingJoinRoom(bookingId, roomId);
+                    roomJoin = false;
+                    break;
+            }
         }
 
+        
+
+        bool customerJoin = true;
+
+        while (customerJoin)
+        {
+            switch (GetInput(
+                        "1.search for customer by name  2. add customer to booking by id  3. add customer to booking by creating new  4. continue"))
+            {
+                case "1": // search name
+                    await _queryHandler.CustomerQueries.SearchCustomer("name", GetInput("type name to search by"));
+                    break;
+                case "2": //add by id
+                    input = GetInput("input id");
+                    int customerid1;
+                    while (!int.TryParse(input, out customerid1))
+                    {
+                        input = GetInput("wrong input id");
+                    }
+                    await _queryHandler.BookingsJoinCustomer.InsertBookingsJoinCustomer(customerid1, bookingId);;
+                    break;
+                case "3": //add by create
+                    int customerId = await _queryHandler.CustomerQueries.InsertCustomerReturn(GetInput("inputname"),
+                        GetInput("input email"),GetInput("input phonenumber"), Convert.ToInt32(GetInput("input birthyear")));
+                    await _queryHandler.BookingsJoinCustomer.InsertBookingsJoinCustomer(customerId, bookingId);
+                    break;
+                case "4": //continue
+                    customerJoin = false;
+                    break;
+            }
+            
+        }
+        
+
+        bool addAddons = true;
+
+
+        while (addAddons)
+        {
+            await _queryHandler.TestQueries.GetAddons();
+
+            switch (GetInput("1. add addon by id  2. complete booking"))
+            {
+                case "1": //add addon
+                    input = GetInput("input id");
+                    int addonId;
+                    while (!int.TryParse(input, out addonId))
+                    {
+                        input = GetInput("wrong input id");
+                    }
+                    await _queryHandler.BookingsJoinAddons.InsertBookingJoinAddons(bookingId, addonId);
+                    break;
+                case "2": // done
+                    addAddons = false;
+                    break;
+            }
+        }
+
+        GetInput("we are don?");
+        
         _menuState = MenuStateEnum.Main;
     }
 
@@ -324,11 +410,12 @@ public class Menu
                 break;
             case "4": //noel testing
                 //await _queryHandler.BookingToHotelQueryHandler.GetAvailableRoomsForHotel(9,new DateTime(2024, 12,14), new DateTime(2024, 12, 21));
-                await _queryHandler.BookingToHotelQueryHandler.GetAvailableRooms(new DateTime(2024, 12,14), new DateTime(2024, 12, 21));
+                //await _queryHandler.BookingToHotelQueryHandler.GetAvailableRooms(new DateTime(2024, 12,14), new DateTime(2024, 12, 21));
                 //await _queryHandler.HotelAndFeaturesQueries.AllHotels();
                 //await _queryHandler.HotelAndFeaturesQueries.SearchBy();
                 //await _queryHandler.BookingJoinRoomsQueryHandler.InsertBookingJoinRoom(3, new List<int>{ 4, 5, 6 });
                 //await _queryHandler.BookingQueries.InsertBooking(new DateTime(2024, 12, 14), new DateTime(2024, 12, 21));
+                await _queryHandler.BookingsJoinCustomer.InsertBookingsJoinCustomer(202, 12);
                 break;
             case "5":
                 _menuState = MenuStateEnum.Main;

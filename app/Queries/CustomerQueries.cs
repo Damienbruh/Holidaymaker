@@ -116,6 +116,23 @@ public class CustomerQueries
         }
     } 
     
+    public async Task<int> InsertCustomerReturn(string name, string email, string phoneNumber, int birthyear)
+    {
+   
+        const string query = @"INSERT INTO customers (name, email, phone_number, birthyear)
+                               VALUES ($1, $2, $3, $4)
+                               RETURNING customer_id";
+        await using var cmd = _database.CreateCommand(query);
+        cmd.Parameters.AddWithValue(name);
+        cmd.Parameters.AddWithValue(email);
+        cmd.Parameters.AddWithValue(phoneNumber);
+        cmd.Parameters.AddWithValue(birthyear);
+
+        var newId = await cmd.ExecuteScalarAsync();
+            
+        return Convert.ToInt32(newId);
+    }
+    
     public async Task UpdateCustomer(int customerId, string? name = null, string? email = null, string? phoneNumber = null, int? birthYear = null)
     {
         try

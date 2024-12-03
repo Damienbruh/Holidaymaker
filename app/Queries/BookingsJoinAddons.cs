@@ -10,25 +10,17 @@ public class BookingsJoinAddons
         _database = database;
     }
 
-    public async Task<int> InsertBookingJoinAddons(int bookingId, List<int> addonsId)
+    public async Task InsertBookingJoinAddons(int bookingId, int addonsId)
     {
-        var rowsAffected = 0;
-        foreach (var roomId in addonsId)
-        {
-            var query = @"INSERT INTO bookings_join_rooms (rooms_fk, booking_fk)
+
+            var query = @"INSERT INTO bookings_join_addons (addon_fk, booking_fk)
                       VALUES ($1, $2)";
             await using (var cmd = _database.CreateCommand(query))
             {
+                cmd.Parameters.AddWithValue(addonsId);
                 cmd.Parameters.AddWithValue(bookingId);
-                cmd.Parameters.AddWithValue(roomId);
 
                 await cmd.ExecuteNonQueryAsync();
-                rowsAffected++;
             }
-        }
-
-        Console.WriteLine(rowsAffected);
-        Console.ReadLine();
-        return rowsAffected;
     }
 }
