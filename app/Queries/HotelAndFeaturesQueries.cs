@@ -41,9 +41,9 @@ public class HotelAndFeaturesQueries
         {
             Console.Write(hotel.HotelId + "  |  ");
             Console.Write(hotel.StreetName  + "  |  ");
-            Console.Write(hotel  + "  |  ");
-            Console.Write(room.Price  + "  |  ");
-            Console.WriteLine(room.RoomNumber  + "  |  ");
+            Console.Write(hotel.City  + "  |  ");
+            Console.Write(hotel.Country  + "  |  ");
+            Console.Write(hotel.Rating  + "  |  ");
             Console.Write(hotel.FeatureId + "  |  ");
             Console.WriteLine(hotel.Feature + "  |  ");
         }
@@ -99,6 +99,18 @@ public class HotelAndFeaturesQueries
                 }
             }
         }
+        foreach (var hotel in hotels)
+        {
+            Console.Write(hotel.HotelId + "  |  ");
+            Console.Write(hotel.StreetName  + "  |  ");
+            Console.Write(hotel.City  + "  |  ");
+            Console.Write(hotel.Country  + "  |  ");
+            Console.Write(hotel.Rating  + "  |  ");
+            Console.Write(hotel.FeatureId + "  |  ");
+            Console.WriteLine(hotel.Feature + "  |  ");
+        }
+
+        Console.ReadLine();
         Console.WriteLine("done");
         return hotels;
     }
