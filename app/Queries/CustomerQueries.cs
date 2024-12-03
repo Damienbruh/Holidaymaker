@@ -92,20 +92,18 @@ public class CustomerQueries
     {
         try
         {
-            var query = @"INSERT INTO customers (name, email, phone_number, birthyear)
-                          VALUES (@name, @email, @phone_number, @birthyear)";
-            await using (var cmd = _database.CreateCommand(query))
-            {
-                cmd.Parameters.AddWithValue("name", name);
-                cmd.Parameters.AddWithValue("email", email);
-                cmd.Parameters.AddWithValue("phone_number", phoneNumber);
-                cmd.Parameters.AddWithValue("birthyear", birthyear);
+            const string query = @"INSERT INTO customers (name, email, phone_number, birthyear)
+                                   VALUES ($1, $2, $3, $4)";
+            await using var cmd = _database.CreateCommand(query);
+            cmd.Parameters.AddWithValue(name);
+            cmd.Parameters.AddWithValue(email);
+            cmd.Parameters.AddWithValue(phoneNumber);
+            cmd.Parameters.AddWithValue(birthyear);
 
-                var rowsAffected = await cmd.ExecuteNonQueryAsync();
-                Console.WriteLine(rowsAffected > 0
-                    ? "Customer successfully added."
-                    : "Customer does not exist.");
-            }
+            var rowsAffected = await cmd.ExecuteNonQueryAsync();
+            Console.WriteLine(rowsAffected > 0
+                ? "Customer successfully added."
+                : "Customer does not exist.");
         }
         catch (Exception ex)
         {
