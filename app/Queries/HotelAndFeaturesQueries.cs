@@ -37,7 +37,18 @@ public class HotelAndFeaturesQueries
                 });
             }
 
-        Console.WriteLine("done");
+        foreach (var hotel in hotels)
+        {
+            Console.Write(hotel.HotelId + "  |  ");
+            Console.Write(hotel.StreetName  + "  |  ");
+            Console.Write(hotel  + "  |  ");
+            Console.Write(room.Price  + "  |  ");
+            Console.WriteLine(room.RoomNumber  + "  |  ");
+            Console.Write(hotel.FeatureId + "  |  ");
+            Console.WriteLine(hotel.Feature + "  |  ");
+        }
+
+        Console.ReadLine();
         return hotels;
     }
 

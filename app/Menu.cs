@@ -225,6 +225,8 @@ public class Menu
             case "4": //noel testing
                 //await _queryHandler.BookingToHotelQueryHandler.GetAvailableRoomsForHotel(9,new DateTime(2024, 12,14), new DateTime(2024, 12, 21));
                 //await _queryHandler.BookingToHotelQueryHandler.GetAvailableRooms(new DateTime(2024, 12,14), new DateTime(2024, 12, 21));
+                await _queryHandler.HotelAndFeaturesQueries.AllHotels();
+                //await _queryHandler.HotelAndFeaturesQueries.SearchBy();
                 break;
         }
         
