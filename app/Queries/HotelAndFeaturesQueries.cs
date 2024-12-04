@@ -48,7 +48,7 @@ public class HotelAndFeaturesQueries
         //     Console.WriteLine(hotel.Feature + "  |  ");
         // }
 
-        Console.ReadLine();
+        // Console.ReadLine();
         return hotels;
     }
 
@@ -111,8 +111,8 @@ public class HotelAndFeaturesQueries
         // }
 
         
-        Console.WriteLine("done");
-        Console.ReadLine();
+        // Console.WriteLine("done");
+        // Console.ReadLine();
         return hotels;
     }
 }

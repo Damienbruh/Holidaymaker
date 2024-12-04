@@ -35,7 +35,7 @@ public class HotellQueries
                 });
             }
 
-        Console.WriteLine("done");
+        // Console.WriteLine("done");
         return hotels;
     }
 
@@ -84,7 +84,7 @@ public class HotellQueries
                 }
             }
         }
-        Console.WriteLine("done");
+        // Console.WriteLine("done");
         return hotels;
     }
 

@@ -49,16 +49,16 @@ public class BookingToHotelQueryHandler
              });   
         }
 
-        foreach (var room in availableRooms)
-        {
-            Console.Write(room.HotelId + "  |  ");
-            Console.Write(room.RoomId  + "  |  ");
-            Console.Write(room.Size  + "  |  ");
-            Console.Write(room.Price  + "  |  ");
-            Console.WriteLine(room.RoomNumber  + "  |  ");
-        }
-
-        Console.ReadLine();
+        // foreach (var room in availableRooms)
+        // {
+        //     Console.Write(room.HotelId + "  |  ");
+        //     Console.Write(room.RoomId  + "  |  ");
+        //     Console.Write(room.Size  + "  |  ");
+        //     Console.Write(room.Price  + "  |  ");
+        //     Console.WriteLine(room.RoomNumber  + "  |  ");
+        // }
+        //
+        // Console.ReadLine();
         return availableRooms;
     }
     public async Task<List<BookingToHotell>> GetAvailableRooms(DateTime startDate, DateTime endDate)
@@ -84,17 +84,17 @@ public class BookingToHotelQueryHandler
             });   
         }
 
-        foreach (var room in availableRooms)
-        {
-            Console.Write(room.HotelId + "  |  ");
-            Console.Write(room.RoomId  + "  |  ");
-            Console.Write(room.Size  + "  |  ");
-            Console.Write(room.Price  + "  |  ");
-            Console.WriteLine(room.RoomNumber  + "  |  ");
+        // foreach (var room in availableRooms)
+        // {
+        //     Console.Write(room.HotelId + "  |  ");
+        //     Console.Write(room.RoomId  + "  |  ");
+        //     Console.Write(room.Size  + "  |  ");
+        //     Console.Write(room.Price  + "  |  ");
+        //     Console.WriteLine(room.RoomNumber  + "  |  ");
+        //
+        // }
 
-        }
-
-        Console.ReadLine();
+        // Console.ReadLine();
         return availableRooms;
     }
     
