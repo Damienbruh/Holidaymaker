@@ -127,11 +127,8 @@ public class Menu
         }
         else
         {
-            Console.WriteLine("invalid login credentials, press any key to continue");
-            Console.ReadLine();
+            Console.WriteLine("invalid login credentials");
         }
-        
-        
     }
     private async Task HandleMainMenu()
     {
