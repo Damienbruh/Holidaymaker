@@ -399,7 +399,7 @@ public class Menu
               // SEARCH await _queryHandler.CustomerQueries.SearchCustomer("name", "Thom");
              // INSERT  await _queryHandler.CustomerQueries.InsertCustomer("David maguy", "Davidmaguy123@gmail.com", "070-418-9995", 1999);
              // DELETE await _queryHandler.CustomerQueries.DeleteCustomer(201);
-             // UPDATE await _queryHandler.CustomerQueries.UpdateCustomer(200, name: "deez nuticus", email: "deez@gmail.com");
+             // UPDATE await _queryHandler.CustomerQueries.UpdateCustomer(200, name: "Stinky Carl", email: "orb@gmail.com");
               
                 break;
             case "2": //david testing
