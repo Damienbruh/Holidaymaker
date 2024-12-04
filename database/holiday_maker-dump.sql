@@ -418,6 +418,8 @@ COPY public.addons (addons_id, addon, price, hotel_fk) FROM stdin;
 --
 
 COPY public.admins (id, username, password) FROM stdin;
+1	admin	password
+2	david	assword
 \.
 
 
@@ -476,6 +478,15 @@ COPY public.bookings (bookings_id, start_date, end_date, status) FROM stdin;
 48	2024-11-06 20:43:09	2025-01-29 08:51:03	pending
 49	2024-12-31 15:25:08	2025-01-16 11:46:35	active
 50	2024-11-16 04:15:56	2025-02-04 17:08:51	active
+56	2024-12-07 00:00:00	2024-12-14 00:00:00	active
+57	2024-11-15 00:00:00	2024-11-22 00:00:00	active
+58	2024-12-07 00:00:00	2024-12-14 00:00:00	active
+59	2024-12-12 00:00:00	2024-12-24 00:00:00	active
+61	2024-11-11 00:00:00	2024-11-18 00:00:00	active
+62	2024-12-12 00:00:00	2024-12-19 00:00:00	active
+63	2024-12-24 00:00:00	2024-12-30 00:00:00	active
+64	2026-12-12 00:00:00	2026-12-24 00:00:00	active
+65	2025-11-11 00:00:00	2025-11-16 00:00:00	active
 \.
 
 
@@ -484,6 +495,9 @@ COPY public.bookings (bookings_id, start_date, end_date, status) FROM stdin;
 --
 
 COPY public.bookings_join_addons (addon_fk, booking_fk) FROM stdin;
+1	62
+1	63
+3	65
 \.
 
 
@@ -492,6 +506,15 @@ COPY public.bookings_join_addons (addon_fk, booking_fk) FROM stdin;
 --
 
 COPY public.bookings_join_customer (customer_fk, booking_fk) FROM stdin;
+203	62
+202	62
+204	62
+202	63
+203	63
+204	63
+55	63
+50	64
+10	65
 \.
 
 
@@ -500,6 +523,10 @@ COPY public.bookings_join_customer (customer_fk, booking_fk) FROM stdin;
 --
 
 COPY public.bookings_join_rooms (rooms_fk, booking_fk) FROM stdin;
+213	61
+222	61
+31	62
+33	62
 1	1
 2	1
 3	2
@@ -550,6 +577,11 @@ COPY public.bookings_join_rooms (rooms_fk, booking_fk) FROM stdin;
 48	32
 49	33
 50	33
+16	63
+22	63
+110	63
+151	64
+3	65
 \.
 
 
@@ -758,6 +790,9 @@ COPY public.customers (customer_id, name, email, phone_number, birthyear) FROM s
 198	Dasya Lodin	dlodin5h@abc.net.au	439-471-9986	1971
 199	Mortimer Lathwell	mlathwell5i@jugem.jp	689-582-9119	1957
 200	Donny Wraight	dwraight5j@vistaprint.com	480-423-9211	1968
+202	kasper	kasper@gmale.com	66666666666666	1265
+203	damien	damien@deez.nuts	45687489545	1888
+204	david	davidmaguy@gmail.com	699699669696	1
 \.
 
 
@@ -1141,21 +1176,21 @@ SELECT pg_catalog.setval('public.addons_addons_id_seq', 4, true);
 -- Name: admins_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.admins_id_seq', 1, false);
+SELECT pg_catalog.setval('public.admins_id_seq', 2, true);
 
 
 --
 -- Name: bookings_bookings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.bookings_bookings_id_seq', 53, true);
+SELECT pg_catalog.setval('public.bookings_bookings_id_seq', 65, true);
 
 
 --
 -- Name: customers_customer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.customers_customer_id_seq', 200, true);
+SELECT pg_catalog.setval('public.customers_customer_id_seq', 204, true);
 
 
 --

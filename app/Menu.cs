@@ -28,7 +28,7 @@ public class Menu
         { MenuStateEnum.LoggedOut, new []{"please input you username and password"} },
         { MenuStateEnum.Main, new []{"1. customer management","2. create booking", "3. logOut","4. quit", "5. testing menu"}},
         { MenuStateEnum.ManageCustomers, new []{"1. add customer","2. find customer by name","3.edit customer by id","4. remove customer by id", "5. return"}},
-        { MenuStateEnum.TestingMenu, new []{"1. damien test command", "2. david test command", "3. kasper test command", "4. noel test command", "5. return"}},
+        { MenuStateEnum.TestingMenu, new []{"1. test 1", "2. result menu test", "3. test 3", "4. test 4", "5. return"}},
         { MenuStateEnum.ResultMenu, new []{"arrow keys to navigate", "enter to confirm", "backspace to return"}},
         { MenuStateEnum.BookingMenu, new []{"1. search by city", "2. search by distance"}}
     };
