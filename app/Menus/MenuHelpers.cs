@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text;
 using app.Queries.TableObjects;
 namespace app.Menus;
 
@@ -28,6 +29,7 @@ public static class MenuHelpers
         {
             //insåg efteråt att jag kunde ha splittat vid varje space och
             //sen gjort min radbrytning vid index halva längden av listan ord
+            //detta är dock inte utan egan problem att lösa som tex olika storlek på ord
             //but this was already completed 
             int splitCount = text.Length / totalWidth;
             
@@ -55,7 +57,75 @@ public static class MenuHelpers
         return outputStrings.ToArray();
     }
 
-    
+    public static string[] createOptionFooterStrings(List<string> options, int totalWidth, int spacing = 5,char topChar = '-', char sideChar = '|')
+    {
+        List<string> newString = new List<string>();
+        int optionCount = options.Count;
+        int optionTextLength = options.Sum(s => s.Length);
+        int textWithSpacingSize = optionTextLength + (optionCount * spacing * 2) + (spacing * 2);
+        StringBuilder stringBuilder = new StringBuilder();
+        
+        newString.Add(new String(topChar, totalWidth));
+
+        if (textWithSpacingSize < totalWidth - 2)
+        {
+
+            stringBuilder.Append(' ', spacing);
+            stringBuilder.Append(fullStringWithSpacing(' '));
+            stringBuilder.Append(' ', spacing);
+
+            newString.Add(sideChar + CenterInString(stringBuilder.ToString(), totalWidth - 2) + sideChar);
+        }
+        else
+        {
+            stringBuilder.Append(fullStringWithSpacing('\u25a0', true));
+            stringBuilder.Remove(0, 1);
+            string currentString = stringBuilder.ToString();
+            textWithSpacingSize = currentString.Length + (spacing * 2);
+            while (textWithSpacingSize > totalWidth - 12)
+            {
+                int index = totalWidth - 3;
+                bool loop = true;
+                while (loop)
+                {
+                    if (currentString[index] == '|')
+                    {
+                        stringBuilder.Replace('\u25a0', ' ', 0, index);
+                        stringBuilder.Remove(index, 1);
+                        newString.Add(sideChar + CenterInString(new string(' ', spacing) + 
+                                                                stringBuilder.ToString(0, index - 1).Replace('|', '\0') + 
+                                                                new string(' ', spacing), totalWidth - 2) + sideChar);
+                        stringBuilder.Remove(0, index);
+                        loop = false;
+                    }
+                    index--;
+                }
+                currentString = stringBuilder.ToString();
+                textWithSpacingSize = currentString.Length + (spacing * 2);
+            }
+            stringBuilder.Replace('|', '\0');
+            stringBuilder.Replace('\u25a0', ' ');
+            stringBuilder.Insert(0, new string(' ', spacing));
+            stringBuilder.Append(' ', spacing);
+            newString.Add(sideChar + CenterInString(stringBuilder.ToString(), totalWidth) + sideChar);
+
+            
+        }
+        string fullStringWithSpacing(char c, bool seperateSpacingWithChar = false)
+        {
+            StringBuilder newStr = new StringBuilder();
+            foreach (var option in options)
+            {
+                if (seperateSpacingWithChar) stringBuilder.Append('|');
+                stringBuilder.Append(c, spacing);
+                stringBuilder.Append(option);
+                stringBuilder.Append(c, spacing);
+            }
+            return newStr.ToString();
+        }
+        newString.Add(new String(topChar, totalWidth));
+        return newString.ToArray();
+    }
     
     public static Dictionary<PropertyInfo, int> CalculateMaxWidthOfAllProperties<T>(List<T> objects)
     {

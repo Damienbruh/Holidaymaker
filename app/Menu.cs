@@ -29,7 +29,7 @@ public class Menu
         { MenuStateEnum.Main, new []{"1. customer management","2. create booking", "3. logOut","4. quit", "5. testing menu"}},
         { MenuStateEnum.ManageCustomers, new []{"1. add customer","2. find customer by name","3.edit customer by id","4. remove customer by id", "5. return"}},
         { MenuStateEnum.TestingMenu, new []{"1. test 1", "2. result menu test", "3. test 3", "4. test 4", "5. return"}},
-        { MenuStateEnum.ResultMenu, new []{"arrow keys to navigate", "enter to confirm", "backspace to return"}},
+        { MenuStateEnum.ResultMenu, new []{"arrow keys to navigate", "enter to confirm", "backspace to return", "testing text", "testing text", "testing text", "testing text"}},
         { MenuStateEnum.BookingMenu, new []{"1. search by city", "2. search by distance"}}
     };
     private readonly Dictionary<MenuStateEnum, Func<Task>> _menuHandlers;
@@ -37,8 +37,7 @@ public class Menu
     private string _menuMessage = "please select one of the menu options by typing";
     private QueryHandler _queryHandler;
     private bool _menuLoop = true;
-
-    private ResultsMenu _resultsMenu;
+    
     
     public Menu(QueryHandler queryHandler)
     {
@@ -54,7 +53,7 @@ public class Menu
         };
         _menuState = MenuStateEnum.Main; //säger var vi startar menu state
         _queryHandler = queryHandler;
-        _resultsMenu = new ResultsMenu(_queryHandler);
+
     }
 
     public async Task MenuMain()
@@ -431,22 +430,12 @@ public class Menu
         
     }
     #endregion
-    // private string PadBoth(string text, int totalWidth)
-    // {
-    //     int spaces = totalWidth - text.Length;
-    //     int padLeft = spaces / 2 + text.Length;
-    //     return text.PadLeft(padLeft).PadRight(totalWidth);
-    // }
     
     private async Task ResultMenuHandler()
     {
         List<Customer> customers = await _queryHandler.TestQueries.TestQuery();
-        MenuHelpers.CalculateMaxWidthOfAllProperties(customers);
-        // var obj = customers[0];
-        //  foreach(var prop in obj.GetType().GetProperties()) {
-        //      Console.WriteLine("{0}-{1}", prop.Name, prop.Name.GetType());
-        //      Console.WriteLine("{0}-{1}", prop.Name, prop.GetValue(obj)?.ToString());
-        //  }
+        //MenuHelpers.CalculateMaxWidthOfAllProperties(customers); // test
+
 
 
         Console.ReadLine();
@@ -460,7 +449,6 @@ public class Menu
         int customersStart = 0;
         int customersEnd = 10;
         ConsoleKeyInfo key;
-        bool test = true;
         int row = 0;
         Console.Clear();
 
@@ -483,16 +471,11 @@ public class Menu
         {
             Console.WriteLine(text);
         }
-        // Console.WriteLine(new string('-', totalWidth));
-        // Console.WriteLine("|" + MenuHelpers.CenterInString("viewing customers", totalWidth - 2) + "|");
-        // Console.WriteLine(new string('-', totalWidth));
         
         (int left, int top) = Console.GetCursorPosition();
         
-        
-
         Console.CursorVisible = false;
-        
+        bool test = true;
         while (test)
         {
             Console.SetCursorPosition(left, top);
@@ -554,61 +537,17 @@ public class Menu
                         color1);
                     
                     Console.WriteLine("  |  ");
-                    
-                    // Console.Write("|  ");
-                    
-                    // Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    // Console.Write("Id: ");
-                    // Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    // Console.Write(customer.Id.ToString().PadRight(maxIdLength));
-                    // Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    // Console.Write("  |  ");
-                    
-                    // Console.Write("Name: ");
-                    // Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    // Console.Write((customer.Name ?? "null").PadRight(maxNameLength));
-                    // Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    // Console.Write("  |  ");
-                    
-                    // Console.Write("Email: ");
-                    // Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    // Console.Write((customer.Email ?? "null").PadRight(maxEmailLength));
-                    // Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    // Console.Write("  |  ");
-                    
-                    // Console.Write("PhoneNumber: ");
-                    // Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    // Console.Write((customer.PhoneNumber ?? "null").PadRight(maxPhonenumberLength));
-                    // Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    // Console.Write("  |  ");
-                    
-                    // Console.Write("BirthYear: ");
-                    // Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    // Console.Write(customer.Birthyear.ToString().PadRight(maxBirthyearLength));
-                    // Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    
-                    
-                    // Console.WriteLine("  |  ");
                 }
             }
             Console.ResetColor();
-            Console.WriteLine(new string('-', totalWidth));
-            if (_menuOptions.TryGetValue(_menuState, out string[]? options))
+
+            string[] optionStrings = MenuHelpers.createOptionFooterStrings(_menuOptions[_menuState].ToList(), totalWidth);
+
+            foreach (var text in optionStrings)
             {
-                string optionsText = "";
-                foreach (var option in options)
-                {
-                    optionsText = optionsText + option + "   ";
-                }
-                Console.WriteLine("|" + MenuHelpers.CenterInString(optionsText, totalWidth - 2) + "|");
+                Console.WriteLine(text);
             }
-            else
-            {
-                Console.WriteLine("no options for this state");
-            }
-            Console.WriteLine(new string('-', totalWidth));
-            
-            
+   
             key = Console.ReadKey(true);
             
             switch (key.Key)
@@ -622,7 +561,7 @@ public class Menu
                     }
                     else
                     {
-                        if (row >= customers.Count - 5)
+                        if (row >= customers.Count - 6)
                         {
                             customersStart = customers.Count - 10;
                             customersEnd = customers.Count;
