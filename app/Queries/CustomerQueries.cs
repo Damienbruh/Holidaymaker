@@ -27,8 +27,8 @@ public class CustomerQueries
                     Console.WriteLine($"Id: {reader.GetInt32(0)}," +
                                       $"Name: {reader.GetString(1)}," +
                                       $"email: {reader.GetString(2)}," +
-                                      $"phone_number: {reader.GetString(3)}," +
-                                      $"birthyear: {reader.GetInt32(4)}");
+                                      $"Phone_number: {reader.GetString(3)}," +
+                                      $"Birthyear: {reader.GetInt32(4)}");
                 }
 
             Console.WriteLine("done");
