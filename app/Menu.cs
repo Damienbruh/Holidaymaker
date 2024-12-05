@@ -394,11 +394,19 @@ public class Menu
         switch (GetInput())
         {
             case "1": //damien testing
-                await _queryHandler.CustomerQueries.AllCustomers(); 
-              // SEARCH: await _queryHandler.CustomerQueries.SearchCustomer("name", "Thom");
-             // INSERT: await _queryHandler.CustomerQueries.InsertCustomer("David maguy", "Davidmaguy123@gmail.com", "070-418-9995", 1999);
-             // DELETE: await _queryHandler.CustomerQueries.DeleteCustomer(201);
-             // UPDATE: await _queryHandler.CustomerQueries.UpdateCustomer(200, name: "Stinky Carl", email: "orb@gmail.com");
+                List<BookingsView> allBookings = await _queryHandler.BookingViewQueries.GetAllBookings();
+                foreach (var bookings in allBookings)
+                {
+                    Console.Write("Bookings id: " + bookings.BookingsId + "  |  ");
+                    Console.Write("StartDate: " + bookings.StartDate + "  |  ");
+                    Console.Write("Room size: " + bookings.EndDate + "  |  ");
+                    Console.WriteLine("Room number: " + bookings.Status + "  |  ");
+                } 
+                // ALL: await _queryHandler.CustomerQueries.AllCustomers(); 
+                // SEARCH: await _queryHandler.CustomerQueries.SearchCustomer("name", "Thom");
+                // INSERT: await _queryHandler.CustomerQueries.InsertCustomer("David maguy", "Davidmaguy123@gmail.com", "070-418-9995", 1999);
+                // DELETE: await _queryHandler.CustomerQueries.DeleteCustomer(201);
+                // UPDATE: await _queryHandler.CustomerQueries.UpdateCustomer(200, name: "Stinky Carl", email: "orb@gmail.com");
               
                 break;
             case "2": //david testing

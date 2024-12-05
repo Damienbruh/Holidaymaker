@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿using app.Queries.TableObjects;
+using Npgsql;
 using NpgsqlTypes;
 
 namespace app.Queries;
@@ -26,8 +27,8 @@ public class CustomerQueries
                     Console.WriteLine($"Id: {reader.GetInt32(0)}," +
                                       $"Name: {reader.GetString(1)}," +
                                       $"email: {reader.GetString(2)}," +
-                                      $"phone_number: {reader.GetString(3)}," +
-                                      $"birthyear: {reader.GetInt32(4)}");
+                                      $"Phone_number: {reader.GetString(3)}," +
+                                      $"Birthyear: {reader.GetInt32(4)}");
                 }
 
             Console.WriteLine("done");
@@ -39,10 +40,10 @@ public class CustomerQueries
         }
     }
 
-    public async Task SearchCustomer(string columnName, string searchTerm)
+    public async Task<List<Customer>> SearchCustomer(string columnName, string searchTerm)
     {
-        try
-        {
+       
+            List<Customer> customers = new List<Customer>();
             var query = $"SELECT * FROM customers WHERE {columnName} ILIKE @searchTerm";
             await using (var cmd = _database.CreateCommand(query))
             {
@@ -53,23 +54,21 @@ public class CustomerQueries
                     if (!reader.HasRows)
                     {
                         Console.WriteLine("Customer does not exist");
-                        return;
+                        
                     }
-                    while (await reader.ReadAsync())
+                    customers.Add(new Customer
                     {
-                        Console.WriteLine($"Id: {reader.GetInt32(0)}, " +
-                                          $"Name: {reader.GetString(1)}, " +
-                                          $"Email: {reader.GetString(2)}, " +
-                                          $"Phone: {reader.GetString(3)}, " +
-                                          $"BirthYear: {reader.GetInt32(4)}");
-                    }
+                        Id = reader.GetInt32(0),
+                        Name = reader.IsDBNull(1) ? null : reader.GetString(1),
+                        Email = reader.IsDBNull(2) ? null : reader.GetString(2),
+                        PhoneNumber = reader.IsDBNull(3) ? null : reader.GetString(3),
+                        Birthyear = reader.GetInt32(4)
+                    });
                 }
+                
+                Console.WriteLine("done");
+                return customers;
             }
-        } 
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An error occurred: {ex.Message}");
-        }
     }
 
     public async Task DeleteCustomer(int customerId)
