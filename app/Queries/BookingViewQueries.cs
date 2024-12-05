@@ -1,4 +1,5 @@
-﻿using app.Queries.TableObjects;
+﻿using System.Data;
+using app.Queries.TableObjects;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -25,28 +26,28 @@ public class BookingsViewQueries
                 bookings.Add(new BookingsView
                 {
                     BookingsId = reader.GetInt32(0),
-                    StartDate = reader.GetString(1),
-                    EndDate = reader.GetString(2),
+                    StartDate = reader.GetDateTime(1).ToString(),
+                    EndDate = reader.GetDateTime(2).ToString(),
                     Status = reader.GetString(3),
-                    Addons = reader.GetString(4),
-                    AddonPrice = reader.GetInt32(5),
-                    RoomId = reader.GetInt32(6),
-                    Size = reader.GetString(7),
-                    Price = reader.GetInt32(8),
-                    RoomNumber = reader.GetInt32(9),
-                    CustomerID = reader.GetInt32(10),
-                    CustomerName = reader.GetString(11),
-                    CustomerEmail = reader.GetString(12),
-                    CustomerPhone = reader.GetString(13),
-                    Birthyear = reader.GetString(14),
+                    AddonsId = reader.IsDBNull(4) ? null : reader.GetInt32(4),
+                    Addons = reader.IsDBNull(5) ? null : reader.GetString(5),
+                    AddonPrice = reader.IsDBNull(6) ? null : reader.GetInt32(6),
+                    RoomId = reader.GetInt32(7),
+                    Size = reader.GetString(8),
+                    Price = reader.GetInt32(9),
+                    RoomNumber = reader.GetInt32(10),
+                    CustomerID = reader.GetInt32(11),
+                    CustomerName = reader.GetString(12),
+                    CustomerEmail = reader.GetString(13),
+                    CustomerPhone = reader.GetString(14),
+                    Birthyear = reader.GetInt32(15),
                     
                     
                 });
             }
-        
         return bookings;
-
     }
+    
 }
     
   

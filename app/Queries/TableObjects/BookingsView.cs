@@ -3,11 +3,12 @@
 public class BookingsView
 {
     public int BookingsId { get; set; }
-    public string StartDate { get; set; }
-    public string EndDate { get; set; }
+    public string? StartDate { get; set; }
+    public string? EndDate { get; set; }
     public string? Status { get; set; } 
+    public int? AddonsId { get; set; }
     public string? Addons { get; set; }
-    public int AddonPrice { get; set; }
+    public int? AddonPrice { get; set; }
     public int RoomId { get; set; }
     public string? Size { get; set; }
     public int Price { get; set; }
@@ -16,5 +17,5 @@ public class BookingsView
     public string? CustomerName { get; set; }
     public string? CustomerEmail { get; set; }
     public string? CustomerPhone { get; set; }
-    public string? Birthyear { get; set; }
+    public int Birthyear { get; set; }
 }
