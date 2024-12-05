@@ -49,6 +49,7 @@ DROP TABLE IF EXISTS public.bookings_join_rooms;
 DROP TABLE IF EXISTS public.bookings;
 DROP TABLE IF EXISTS public.admins;
 DROP TABLE IF EXISTS public.addons;
+drop view if exists public.booking_view;
 DROP FUNCTION IF EXISTS public.verify_login(input_username text, input_password text);
 -- *not* dropping schema, since initdb creates it
 --
