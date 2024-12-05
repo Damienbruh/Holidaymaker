@@ -14,6 +14,7 @@ class Program
         QueryHandler queryHandler = new(database.Connection());
         Menu menu = new(queryHandler);
 
+
         await menu.MenuMain();
         
         

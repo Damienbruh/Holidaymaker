@@ -52,7 +52,7 @@ public class Menu
             { MenuStateEnum.ResultMenu, ResultMenuHandler},
             { MenuStateEnum.BookingMenu, BookingMenuHandler}
         };
-        _menuState = MenuStateEnum.LoggedOut; //säger var vi startar menu state
+        _menuState = MenuStateEnum.Main; //säger var vi startar menu state
         _queryHandler = queryHandler;
         _resultsMenu = new ResultsMenu(_queryHandler);
     }
@@ -92,6 +92,7 @@ public class Menu
         return response;
     }
 
+    #region menus
     private void PrintMenuOptions()
     {
         if (_menuOptions.TryGetValue(_menuState, out string[]? options))
@@ -421,30 +422,32 @@ public class Menu
         }
         
     }
-
-    private string PadBoth(string text, int totalWidth)
-    {
-        int spaces = totalWidth - text.Length;
-        int padLeft = spaces / 2 + text.Length;
-        return text.PadLeft(padLeft).PadRight(totalWidth);
-    }
+    #endregion
+    // private string PadBoth(string text, int totalWidth)
+    // {
+    //     int spaces = totalWidth - text.Length;
+    //     int padLeft = spaces / 2 + text.Length;
+    //     return text.PadLeft(padLeft).PadRight(totalWidth);
+    // }
     
     private async Task ResultMenuHandler()
     {
         List<Customer> customers = await _queryHandler.TestQueries.TestQuery();
+        MenuHelpers.CalculateMaxWidthOfAllProperties(customers);
+        // var obj = customers[0];
+        //  foreach(var prop in obj.GetType().GetProperties()) {
+        //      Console.WriteLine("{0}-{1}", prop.Name, prop.Name.GetType());
+        //      Console.WriteLine("{0}-{1}", prop.Name, prop.GetValue(obj)?.ToString());
+        //  }
 
-        // foreach(var prop in customers[1].GetType().GetProperties()) {
-        //     Console.WriteLine("{0}-{1}", prop.Name, prop.Name.GetType());
-        // }
 
-
-        //Console.ReadLine();
+        Console.ReadLine();
         int maxIdLength = customers.Max(c => c.Id.ToString().Length);
         int maxNameLength = customers.Max(c => (c.Name ?? "").Length);
         int maxEmailLength = customers.Max(c => (c.Email ?? "").Length);
         int maxPhonenumberLength = customers.Max(c => (c.PhoneNumber ?? "").Length);
         int maxBirthyearLength = customers.Max(c => c.Birthyear.ToString().Length);
-        int extraTextLength = "Id:   |  Name:   |  Email:   |  PhoneNumber:   |  BirthYear:   |".Length;
+        int extraTextLength = "|  Id:   |  Name:   |  Email:   |  PhoneNumber:   |  BirthYear:   |".Length;
         int totalWidth = maxIdLength + maxNameLength + maxEmailLength + maxPhonenumberLength + maxBirthyearLength + extraTextLength;
         int customersStart = 0;
         int customersEnd = 10;
@@ -452,9 +455,29 @@ public class Menu
         bool test = true;
         int row = 0;
         Console.Clear();
-        Console.WriteLine(new string('-', totalWidth));
-        Console.WriteLine("|" + PadBoth("viewing customers", totalWidth - 2) + "|");
-        Console.WriteLine(new string('-', totalWidth));
+
+        string[] headerStrings = MenuHelpers.CreateHeaderStrings("Contrary to popular belief, Lorem Ipsum is not " +
+                                                                 "simply random text. It has roots in a piece of " +
+                                                                 "classical Latin literature from 45 BC, making " +
+                                                                 "it over 2000 years old. Richard McClintock, a " +
+                                                                 "Latin professor at Hampden-Sydney College in Virginia, " +
+                                                                 "looked up one of the more obscure Latin words, " +
+                                                                 "consectetur, from a Lorem Ipsum passage, and going " +
+                                                                 "through the cites of the word in classical literature, " +
+                                                                 "discovered the undoubtable source. Lorem Ipsum comes from " +
+                                                                 "sections 1.10.32 and 1.10.33 of de Finibus Bonorum et Malorum " +
+                                                                 "(The Extremes of Good and Evil) by Cicero, written in 45 BC. This book " +
+                                                                 "is a treatise on the theory of ethics, very popular during the Renaissance. " +
+                                                                 "The first line of Lorem Ipsum, Lorem ipsum dolor sit amet.., " +
+                                                                 "comes from a line in section 1.10.32", totalWidth);
+
+        foreach (var text in headerStrings)
+        {
+            Console.WriteLine(text);
+        }
+        // Console.WriteLine(new string('-', totalWidth));
+        // Console.WriteLine("|" + MenuHelpers.CenterInString("viewing customers", totalWidth - 2) + "|");
+        // Console.WriteLine(new string('-', totalWidth));
         
         (int left, int top) = Console.GetCursorPosition();
         
@@ -475,7 +498,7 @@ public class Menu
                 if (i == row)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"Id: {customer.Id.ToString().PadRight(maxIdLength)}  |  " +
+                    Console.WriteLine($"|  ID: {customer.Id.ToString().PadRight(maxIdLength)}  |  " +
                                       $"Name: {(customer.Name ?? "null").PadRight(maxNameLength)}  |  " +
                                       $"Email: {(customer.Email ?? "null").PadRight(maxEmailLength)}  |  " +
                                       $"PhoneNumber: {(customer.PhoneNumber ?? "null").PadRight(maxPhonenumberLength)}  |  " +
@@ -483,36 +506,81 @@ public class Menu
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    Console.Write("Id: ");
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    Console.Write(customer.Id.ToString().PadRight(maxIdLength));
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    Console.Write("  |  ");
+                    ConsoleColor color1 = ConsoleColor.DarkMagenta;
+                    ConsoleColor color2 = ConsoleColor.DarkCyan;
                     
-                    Console.Write("Name: ");
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    Console.Write((customer.Name ?? "null").PadRight(maxNameLength));
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    Console.Write("  |  ");
                     
-                    Console.Write("Email: ");
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    Console.Write((customer.Email ?? "null").PadRight(maxEmailLength));
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    Console.Write("  |  ");
+                    Console.Write("|  ");
                     
-                    Console.Write("PhoneNumber: ");
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    Console.Write((customer.PhoneNumber ?? "null").PadRight(maxPhonenumberLength));
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    Console.Write("  |  ");
+                    MenuHelpers.PrintWithColor(customer.Id.ToString().PadRight(maxIdLength), 
+                        color2, 
+                        "ID: ",
+                        color1,
+                        "  |  ",
+                        color1);
                     
-                    Console.Write("BirthYear: ");
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    Console.Write(customer.Birthyear.ToString().PadRight(maxBirthyearLength));
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    MenuHelpers.PrintWithColor((customer.Name ?? "null").PadRight(maxNameLength), 
+                        color2,
+                        "Name: ",
+                        color1,
+                        "  |  ",
+                        color1);
+
+                    MenuHelpers.PrintWithColor((customer.Email ?? "null").PadRight(maxEmailLength),
+                        color2,
+                        "Email: ",
+                        color1,
+                        "  |  ",
+                        color1);
+
+                    MenuHelpers.PrintWithColor((customer.PhoneNumber ?? "null").PadRight(maxPhonenumberLength),
+                        color2,
+                        "PhoneNumber: ",
+                        color1,
+                        "  |  ",
+                        color1);
+
+                    MenuHelpers.PrintWithColor(customer.Birthyear.ToString().PadRight(maxBirthyearLength),
+                        color2,
+                        "BirthYear: ",
+                        color1);
+                    
                     Console.WriteLine("  |  ");
+                    
+                    // Console.Write("|  ");
+                    
+                    // Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    // Console.Write("Id: ");
+                    // Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    // Console.Write(customer.Id.ToString().PadRight(maxIdLength));
+                    // Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    // Console.Write("  |  ");
+                    
+                    // Console.Write("Name: ");
+                    // Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    // Console.Write((customer.Name ?? "null").PadRight(maxNameLength));
+                    // Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    // Console.Write("  |  ");
+                    
+                    // Console.Write("Email: ");
+                    // Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    // Console.Write((customer.Email ?? "null").PadRight(maxEmailLength));
+                    // Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    // Console.Write("  |  ");
+                    
+                    // Console.Write("PhoneNumber: ");
+                    // Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    // Console.Write((customer.PhoneNumber ?? "null").PadRight(maxPhonenumberLength));
+                    // Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    // Console.Write("  |  ");
+                    
+                    // Console.Write("BirthYear: ");
+                    // Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    // Console.Write(customer.Birthyear.ToString().PadRight(maxBirthyearLength));
+                    // Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    
+                    
+                    // Console.WriteLine("  |  ");
                 }
             }
             Console.ResetColor();
@@ -524,7 +592,7 @@ public class Menu
                 {
                     optionsText = optionsText + option + "   ";
                 }
-                Console.WriteLine("|" + PadBoth(optionsText, totalWidth - 2) + "|");
+                Console.WriteLine("|" + MenuHelpers.CenterInString(optionsText, totalWidth - 2) + "|");
             }
             else
             {
