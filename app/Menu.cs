@@ -327,6 +327,7 @@ public class Menu
     
     private async Task BookingMenuHandler()
     {
+        Console.WriteLine("we have hotels in these cities Innsbruck, Chamonix, Aspen, Zermatt, Hakuba"); //i vas lazy on a friday :)
         switch (GetInput())
         {
             case "1": //search by city
