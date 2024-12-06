@@ -50,7 +50,7 @@ public class Menu
             { MenuStateEnum.Main, HandleMainMenu},
             { MenuStateEnum.ManageCustomers, HandleManageCustomersMenu},
             { MenuStateEnum.TestingMenu, TestingMenuHandler},
-            { MenuStateEnum.ResultMenu, ResultMenuHandler},
+            //{ MenuStateEnum.ResultMenu, ResultMenuHandler},
             { MenuStateEnum.BookingMenu, BookingMenuHandler},
             {MenuStateEnum.ViewBookingMenu, ViewBookingHandler}
         };
@@ -208,7 +208,7 @@ public class Menu
         Console.WriteLine("Please enter the name you want to search for");
         string? name = GetInput();
         
-        await _queryHandler.CustomerQueries.SearchCustomer("name", name);
+        await ResultMenuHandler(await _queryHandler.CustomerQueries.SearchCustomer("name", name));
     }
 
     private async Task EditCustomerById()
@@ -510,6 +510,7 @@ public class Menu
               
                 break;
             case "2": //david testing
+                await ResultMenuHandler(await _queryHandler.TestQueries.TestQuery());
                 _menuState = MenuStateEnum.ResultMenu;
                 break;
             case "3": //kasper testing
@@ -532,9 +533,9 @@ public class Menu
     }
     #endregion
     
-    private async Task ResultMenuHandler()
+    private async Task ResultMenuHandler(List<Customer> customers)
     {
-        List<Customer> customers = await _queryHandler.TestQueries.TestQuery();
+        
         //MenuHelpers.CalculateMaxWidthOfAllProperties(customers); // test
 
 

@@ -56,14 +56,18 @@ public class CustomerQueries
                         Console.WriteLine("Customer does not exist");
                         
                     }
-                    customers.Add(new Customer
+
+                    while (await reader.ReadAsync())
                     {
-                        Id = reader.GetInt32(0),
-                        Name = reader.IsDBNull(1) ? null : reader.GetString(1),
-                        Email = reader.IsDBNull(2) ? null : reader.GetString(2),
-                        PhoneNumber = reader.IsDBNull(3) ? null : reader.GetString(3),
-                        Birthyear = reader.GetInt32(4)
-                    });
+                        customers.Add(new Customer
+                        {
+                            Id = reader.GetInt32(0),
+                            Name = reader.IsDBNull(1) ? null : reader.GetString(1),
+                            Email = reader.IsDBNull(2) ? null : reader.GetString(2),
+                            PhoneNumber = reader.IsDBNull(3) ? null : reader.GetString(3),
+                            Birthyear = reader.GetInt32(4)
+                        });
+                    }
                 }
                 
                 Console.WriteLine("done");

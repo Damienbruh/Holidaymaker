@@ -1562,7 +1562,7 @@ COPY public.rooms (room_id, size, price, hotel_fk, room_number) FROM stdin;
 -- Name: addons_addons_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.addons_addons_id_seq', 4, true);
+SELECT pg_catalog.setval('public.addons_addons_id_seq', 3, true);
 
 
 --
@@ -1576,14 +1576,14 @@ SELECT pg_catalog.setval('public.admins_id_seq', 2, true);
 -- Name: bookings_bookings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.bookings_bookings_id_seq', 66, true);
+SELECT pg_catalog.setval('public.bookings_bookings_id_seq', 100, true);
 
 
 --
 -- Name: customers_customer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.customers_customer_id_seq', 204, true);
+SELECT pg_catalog.setval('public.customers_customer_id_seq', 100, true);
 
 
 --
@@ -1597,14 +1597,14 @@ SELECT pg_catalog.setval('public.hotel_features_hotel_features_id_seq', 4, true)
 -- Name: hotels_address_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.hotels_address_id_seq', 105, true);
+SELECT pg_catalog.setval('public.hotels_address_id_seq', 25, true);
 
 
 --
 -- Name: rooms_room_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.rooms_room_id_seq', 250, true);
+SELECT pg_catalog.setval('public.rooms_room_id_seq', 100, true);
 
 
 --
