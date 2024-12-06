@@ -334,6 +334,7 @@ public class Menu
                 foreach (var hotel in hotels)
                 {
                     Console.Write("hotel id: " + hotel.HotelId + "  |  ");
+                    Console.Write("hotel name: " + hotel.HotelNames + "  |  ");
                     Console.Write("rating: " + hotel.Rating + "  |  ");
                     Console.Write("distance to ski: " + hotel.DistanceToSkiSlope + "  |  ");
                     Console.Write("distance to center: " + hotel.DistanceToTownCenter + "  |  ");
@@ -344,6 +345,19 @@ public class Menu
                 }
                 break;
             case "2": //search by distance to ski slope
+                List<HotelAndFeatures> hotels1 = await _queryHandler.HotelAndFeaturesQueries.SearchByDistance("distance_to_ski_slope", GetInput("enter distance in kilometers: "));
+                foreach (var hotel in hotels1)
+                {
+                    Console.Write("hotel id: " + hotel.HotelId + "  |  ");
+                    Console.Write("hotel name: " + hotel.HotelNames + "  |  ");
+                    Console.Write("rating: " + hotel.Rating + "  |  ");
+                    Console.Write("distance to ski: " + hotel.DistanceToSkiSlope + "  |  ");
+                    Console.Write("distance to center: " + hotel.DistanceToTownCenter + "  |  ");
+                    Console.Write("feature: " + hotel.Feature + "  |  ");
+                    Console.Write("street address: " + hotel.StreetName + "  |  ");
+                    Console.Write("city: " + hotel.City + "  |  ");
+                    Console.WriteLine("country: " + hotel.Country);
+                }
                 break;
             case "3"://return
                 _menuState = MenuStateEnum.Main;
