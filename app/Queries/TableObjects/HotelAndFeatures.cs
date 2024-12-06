@@ -11,6 +11,8 @@ public class HotelAndFeatures
     public string? DistanceToSkiSlope { get; set; }
     public string? DistanceToTownCenter { get; set; }
     public int Rating { get; set; }
+    public string? HotelNames { get; set; }
+    public string? DistanceToLinusHouse { get; set; }
     public int FeatureId { get; set; }
     public string? Feature { get; set; }
 }
