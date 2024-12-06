@@ -19,18 +19,20 @@ public class Menu
         ManageCustomers,
         TestingMenu,
         ResultMenu,
-        BookingMenu
+        BookingMenu,
+        ViewBookingMenu
     }
 
     //här specifierar vi vad varje menystate ska visa
     private readonly Dictionary<MenuStateEnum, String[]> _menuOptions = new()
     {
         { MenuStateEnum.LoggedOut, new []{"please input you username and password"} },
-        { MenuStateEnum.Main, new []{"1. customer management","2. create booking", "3. logOut","4. quit", "5. testing menu"}},
+        { MenuStateEnum.Main, new []{"1. customer management","2. create booking", "3. logOut","4. quit", "5. testing menu", "6. view bookings"}},
         { MenuStateEnum.ManageCustomers, new []{"1. add customer","2. find customer by name","3.edit customer by id","4. remove customer by id", "5. return"}},
         { MenuStateEnum.TestingMenu, new []{"1. test 1", "2. result menu test", "3. test 3", "4. test 4", "5. return"}},
         { MenuStateEnum.ResultMenu, new []{"arrow keys to navigate", "enter to confirm", "backspace to return", "testing text", "testing text", "testing text", "testing text"}},
-        { MenuStateEnum.BookingMenu, new []{"1. search by city", "2. search by distance"}}
+        { MenuStateEnum.BookingMenu, new []{"1. search by city", "2. search by distance"}},
+        { MenuStateEnum.ViewBookingMenu, new []{"1. view all bookings", "2. view bookings by customer name"}}
     };
     private readonly Dictionary<MenuStateEnum, Func<Task>> _menuHandlers;
     private MenuStateEnum _menuState;
@@ -49,7 +51,8 @@ public class Menu
             { MenuStateEnum.ManageCustomers, HandleManageCustomersMenu},
             { MenuStateEnum.TestingMenu, TestingMenuHandler},
             { MenuStateEnum.ResultMenu, ResultMenuHandler},
-            { MenuStateEnum.BookingMenu, BookingMenuHandler}
+            { MenuStateEnum.BookingMenu, BookingMenuHandler},
+            {MenuStateEnum.ViewBookingMenu, ViewBookingHandler}
         };
         _menuState = MenuStateEnum.Main; //säger var vi startar menu state
         _queryHandler = queryHandler;
@@ -149,6 +152,9 @@ public class Menu
             case "5": //testing
                 _menuState = MenuStateEnum.TestingMenu;
                 break;
+            case "6": //view all bookings
+                _menuState = MenuStateEnum.ViewBookingMenu;
+                break;
         }
     }
 
@@ -241,6 +247,81 @@ public class Menu
         else
         {
             Console.WriteLine("invalid customer ID you want to remove");
+        }
+    }
+
+    private async Task ViewBookingHandler()
+    {
+        switch (GetInput())
+        {
+           case "1": //view all bookings 
+               await AllBookings();
+               break;
+           case "2": //find booking by customer name
+               await SearchBookingsByName();
+               break;
+           case "3":
+               _menuState = MenuStateEnum.Main;
+               break;
+        }
+        
+    }
+
+    private async Task AllBookings()
+    {
+        List<BookingsView> AllBookings = await _queryHandler.BookingViewQueries.GetAllBookings();
+        foreach (var bookings in AllBookings)
+        {
+            Console.Write("Bookings id: " + bookings.BookingsId + "  |  ");
+            Console.Write("StartDate: " + bookings.StartDate + "  |  ");
+            Console.Write("EndDate: " + bookings.EndDate + "  |  ");
+            Console.Write("Status: " + bookings.Status + "  |  ");
+            Console.Write("Addons: " + bookings.Addons + "  |  ");
+            Console.Write("Room size: " + bookings.EndDate + "  |  ");
+            Console.Write("Room number: " + bookings.Status + "  |  ");
+            Console.Write("Customer name: " + bookings.CustomerName + "  |  ");
+            Console.WriteLine("Price: " + bookings.Price + "  |  ");
+        }
+    }
+
+    private async Task SearchBookingsByName()
+    {
+        
+        Console.WriteLine("Please enter the name you want to search for:");
+        string? inputName = Console.ReadLine(); 
+
+        if (string.IsNullOrWhiteSpace(inputName))
+        {
+            Console.WriteLine("Invalid input. Please provide a valid name.");
+            return;
+        }
+
+        try
+        {
+            List<BookingsView> searchResults = await _queryHandler.BookingViewQueries.SearchBookingByName(inputName);
+
+            if (searchResults.Count == 0)
+            {
+                Console.WriteLine($"No bookings found for the name: {inputName}");
+            }
+            else
+            {
+                Console.WriteLine($"Bookings found for the name: {inputName}");
+                foreach (var booking in searchResults)
+                {
+                    Console.WriteLine($"Booking ID: {booking.BookingsId}, " +
+                                      $"Start Date: {booking.StartDate}, " +
+                                      $"End Date: {booking.EndDate}, " +
+                                      $"Status: {booking.Status}, " +
+                                      $"Room Size: {booking.Size}, " +
+                                      $"Room Number: {booking.RoomNumber}, " +
+                                      $"Customer Name: {booking.CustomerName}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred while searching for bookings: {ex.Message}");
         }
     }
     
@@ -393,14 +474,34 @@ public class Menu
         switch (GetInput())
         {
             case "1": //damien testing
-                List<BookingsView> allBookings = await _queryHandler.BookingViewQueries.GetAllBookings();
-                foreach (var bookings in allBookings)
+                /*string searchName = "Lainey Tuffield"; 
+                List<BookingsView> searchBookingsName = await _queryHandler.BookingViewQueries.SearchBookingByName(searchName);
+
+                if (searchBookingsName.Count == 0)
                 {
-                    Console.Write("Bookings id: " + bookings.BookingsId + "  |  ");
-                    Console.Write("StartDate: " + bookings.StartDate + "  |  ");
-                    Console.Write("Room size: " + bookings.EndDate + "  |  ");
-                    Console.WriteLine("Room number: " + bookings.Status + "  |  ");
-                } 
+                    Console.WriteLine("No bookings found for the specified customer name.");
+                }
+                else
+                {
+                    foreach (var bookings in searchBookingsName)
+                    {
+                        Console.Write("Bookings id: " + bookings.BookingsId + "  |  ");
+                        Console.Write("Start Date: " + bookings.StartDate + "  |  ");
+                        Console.Write("End Date: " + bookings.EndDate + "  |  ");
+                        Console.Write("Status: " + bookings.Status + "  |  ");
+                        Console.Write("Room size: " + bookings.Size + "  |  ");
+                        Console.WriteLine("Room number: " + bookings.RoomNumber);
+                    }
+                }*/
+                    
+                /* List<BookingsView> AllBookings = await _queryHandler.BookingViewQueries.GetAllBookings();
+                 foreach (var bookings in allBookings)
+                 {
+                     Console.Write("Bookings id: " + bookings.BookingsId + "  |  ");
+                     Console.Write("StartDate: " + bookings.StartDate + "  |  ");
+                     Console.Write("Room size: " + bookings.EndDate + "  |  ");
+                     Console.WriteLine("Room number: " + bookings.Status + "  |  ");
+                 } */
                 // ALL: await _queryHandler.CustomerQueries.AllCustomers(); 
                 // SEARCH: await _queryHandler.CustomerQueries.SearchCustomer("name", "Thom");
                 // INSERT: await _queryHandler.CustomerQueries.InsertCustomer("David maguy", "Davidmaguy123@gmail.com", "070-418-9995", 1999);
