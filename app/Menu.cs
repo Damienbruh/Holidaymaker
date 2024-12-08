@@ -229,6 +229,8 @@ public class Menu
             string birthYearInput = Console.ReadLine();
             int? birthYear = string.IsNullOrWhiteSpace(birthYearInput) ? null : int.Parse(birthYearInput);
             Console.WriteLine("Customer updated");
+            
+            await _queryHandler.CustomerQueries.UpdateCustomer(customerId, name, email, phone, birthYear);
         }
         else
         {
