@@ -32,7 +32,7 @@ public class Menu
         { MenuStateEnum.TestingMenu, new []{"1. test 1", "2. result menu test", "3. test 3", "4. test 4", "5. return"}},
         { MenuStateEnum.ResultMenu, new []{"arrow keys to navigate", "enter to confirm", "backspace to return", "testing text", "testing text", "testing text", "testing text"}},
         { MenuStateEnum.BookingMenu, new []{"1. search by city", "2. search by distance"}},
-        { MenuStateEnum.ViewBookingMenu, new []{"1. view all bookings", "2. view bookings by customer name"}}
+        { MenuStateEnum.ViewBookingMenu, new []{"1. view all bookings", "2. view bookings by customer name", "3. update existing bookings"}},
     };
     private readonly Dictionary<MenuStateEnum, Func<Task>> _menuHandlers;
     private MenuStateEnum _menuState;
@@ -262,7 +262,10 @@ public class Menu
            case "2": //find booking by customer name
                await SearchBookingsByName();
                break;
-           case "3":
+           case "3": //edit booking
+               await UpdateBooking();
+               break;
+           case "4":
                _menuState = MenuStateEnum.Main;
                break;
         }
@@ -325,6 +328,40 @@ public class Menu
         {
             Console.WriteLine($"An error occurred while searching for bookings: {ex.Message}");
         }
+    }
+
+    private async Task UpdateBooking()
+    {
+       Console.WriteLine("Please enter the booking ID you want to update");
+       if (int.TryParse(GetInput(), out int bookingId))
+       {
+           Console.WriteLine("Enter new starting date (yyyy-MM-dd) or leave blank for no change:");
+           string? startDateInput = Console.ReadLine();
+           DateTime? start_date = null;
+           if (!string.IsNullOrWhiteSpace(startDateInput) && DateTime.TryParse(startDateInput, out DateTime parsedStartDate))
+           {
+               start_date = parsedStartDate;
+           }
+           
+           Console.WriteLine("Enter new ending date (yyyy-MM-dd) or leave blank for no change:");
+           string? endDateInput = Console.ReadLine();
+           DateTime? end_date = null;
+           if (!string.IsNullOrWhiteSpace(endDateInput) && DateTime.TryParse(endDateInput, out DateTime parsedEndDate))
+           {
+               end_date = parsedEndDate;
+           }
+           
+           Console.WriteLine("Enter new status (leave blank for no input)");
+           string? status = Console.ReadLine();
+           if (string.IsNullOrWhiteSpace(status)) status = null;
+           
+           await _queryHandler.BookingQueries.UpdateBooking(bookingId, start_date, end_date, status);
+       }
+       else
+       {
+           Console.WriteLine("invalid booking id");
+       }
+       
     }
     
     private async Task BookingMenuHandler()
@@ -519,6 +556,7 @@ public class Menu
                      Console.Write("Room size: " + bookings.EndDate + "  |  ");
                      Console.WriteLine("Room number: " + bookings.Status + "  |  ");
                  } */
+                // UPDATE BOOKING: await _queryHandler.BookingQueries.UpdateBooking(3, new DateTime(2023, 12, 02), new DateTime(2023, 12, 08), "active");
                 // ALL: await _queryHandler.CustomerQueries.AllCustomers(); 
                 // SEARCH: await _queryHandler.CustomerQueries.SearchCustomer("name", "Thom");
                 // INSERT: await _queryHandler.CustomerQueries.InsertCustomer("David maguy", "Davidmaguy123@gmail.com", "070-418-9995", 1999);

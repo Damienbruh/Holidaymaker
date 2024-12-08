@@ -98,6 +98,6 @@ public class BookingsViewQueries
 
         return bookings;
     }
-
+    
 } 
 

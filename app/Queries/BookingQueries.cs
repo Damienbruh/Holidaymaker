@@ -33,6 +33,44 @@ public class BookingQueries
     } 
     
     
+    public async Task UpdateBooking(int bookingId, DateTime? start_date = null, DateTime? end_date = null, string? status = null)
+    {
+        try
+        {
+           
+            var updateParts = new List<string>();
+
+            if (start_date != null) updateParts.Add(" start_date = @start_date");
+            if (end_date != null) updateParts.Add("end_date = @end_date");
+            if (status != null) updateParts.Add("status= @status");
+
+            if (updateParts.Count == 0)
+            {
+                Console.WriteLine("No fields to update.");
+                return;
+            }
+
+            var updateQuery = $"UPDATE bookings SET {string.Join(", ", updateParts)} WHERE bookings_id = @id";
+
+            await using (var cmd = _database.CreateCommand(updateQuery))
+            {
+                cmd.Parameters.AddWithValue("id", bookingId);
+
+                if (start_date != null) cmd.Parameters.AddWithValue("start_date", start_date);
+                if (end_date != null) cmd.Parameters.AddWithValue("end_date", end_date);
+                if (status != null) cmd.Parameters.AddWithValue("status", status);
+
+                var rowsAffected = await cmd.ExecuteNonQueryAsync();
+                Console.WriteLine(rowsAffected > 0
+                    ? "Booking updated successfully."
+                    : "No Booking found with the specified ID.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+    } 
     
     public async void SpecificBookings()
     {
