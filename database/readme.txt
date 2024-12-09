@@ -1,3 +1,10 @@
+Import holiday_maker-dump-fixed for latest db
+
+
+
+
+Step by step
+
 ------import db-----------
 
 right click postgres@localhost -> import/export -> restore with "pg_restore/psql"

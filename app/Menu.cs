@@ -19,26 +19,27 @@ public class Menu
         ManageCustomers,
         TestingMenu,
         ResultMenu,
-        BookingMenu
+        BookingMenu,
+        ViewBookingMenu
     }
 
     //här specifierar vi vad varje menystate ska visa
     private readonly Dictionary<MenuStateEnum, String[]> _menuOptions = new()
     {
         { MenuStateEnum.LoggedOut, new []{"please input you username and password"} },
-        { MenuStateEnum.Main, new []{"1. customer management","2. create booking", "3. logOut","4. quit", "5. testing menu"}},
+        { MenuStateEnum.Main, new []{"1. customer management","2. create booking", "3. logOut","4. quit", "5. testing menu", "6. view bookings"}},
         { MenuStateEnum.ManageCustomers, new []{"1. add customer","2. find customer by name","3.edit customer by id","4. remove customer by id", "5. return"}},
-        { MenuStateEnum.TestingMenu, new []{"1. damien test command", "2. david test command", "3. kasper test command", "4. noel test command", "5. return"}},
-        { MenuStateEnum.ResultMenu, new []{"arrow keys to navigate", "enter to confirm", "backspace to return"}},
-        { MenuStateEnum.BookingMenu, new []{"1. search by city", "2. search by distance"}}
+        { MenuStateEnum.TestingMenu, new []{"1. test 1", "2. result menu test", "3. test 3", "4. test 4", "5. return"}},
+        { MenuStateEnum.ResultMenu, new []{"arrow keys to navigate", "enter to confirm", "backspace to return", "testing text", "testing text", "testing text", "testing text"}},
+        { MenuStateEnum.BookingMenu, new []{"1. search by city", "2. search by distance"}},
+        { MenuStateEnum.ViewBookingMenu, new []{"1. view all bookings", "2. view bookings by customer name", "3. update existing bookings"}},
     };
     private readonly Dictionary<MenuStateEnum, Func<Task>> _menuHandlers;
     private MenuStateEnum _menuState;
     private string _menuMessage = "please select one of the menu options by typing";
     private QueryHandler _queryHandler;
     private bool _menuLoop = true;
-
-    private ResultsMenu _resultsMenu;
+    
     
     public Menu(QueryHandler queryHandler)
     {
@@ -49,12 +50,13 @@ public class Menu
             { MenuStateEnum.Main, HandleMainMenu},
             { MenuStateEnum.ManageCustomers, HandleManageCustomersMenu},
             { MenuStateEnum.TestingMenu, TestingMenuHandler},
-            { MenuStateEnum.ResultMenu, ResultMenuHandler},
-            { MenuStateEnum.BookingMenu, BookingMenuHandler}
+            //{ MenuStateEnum.ResultMenu, ResultMenuHandler},
+            { MenuStateEnum.BookingMenu, BookingMenuHandler},
+            {MenuStateEnum.ViewBookingMenu, ViewBookingHandler}
         };
-        _menuState = MenuStateEnum.LoggedOut; //säger var vi startar menu state
+        _menuState = MenuStateEnum.Main; //säger var vi startar menu state
         _queryHandler = queryHandler;
-        _resultsMenu = new ResultsMenu(_queryHandler);
+
     }
 
     public async Task MenuMain()
@@ -92,6 +94,7 @@ public class Menu
         return response;
     }
 
+    #region menus
     private void PrintMenuOptions()
     {
         if (_menuOptions.TryGetValue(_menuState, out string[]? options))
@@ -149,6 +152,9 @@ public class Menu
             case "5": //testing
                 _menuState = MenuStateEnum.TestingMenu;
                 break;
+            case "6": //view all bookings
+                _menuState = MenuStateEnum.ViewBookingMenu;
+                break;
         }
     }
 
@@ -202,7 +208,7 @@ public class Menu
         Console.WriteLine("Please enter the name you want to search for");
         string? name = GetInput();
         
-        await _queryHandler.CustomerQueries.SearchCustomer("name", name);
+        await ResultMenuHandler(await _queryHandler.CustomerQueries.SearchCustomer("name", name));
     }
 
     private async Task EditCustomerById()
@@ -223,6 +229,8 @@ public class Menu
             string birthYearInput = Console.ReadLine();
             int? birthYear = string.IsNullOrWhiteSpace(birthYearInput) ? null : int.Parse(birthYearInput);
             Console.WriteLine("Customer updated");
+            
+            await _queryHandler.CustomerQueries.UpdateCustomer(customerId, name, email, phone, birthYear);
         }
         else
         {
@@ -243,9 +251,126 @@ public class Menu
             Console.WriteLine("invalid customer ID you want to remove");
         }
     }
-    
-    private async Task BookingMenuHandler()
+
+    private async Task ViewBookingHandler()
     {
+        switch (GetInput())
+        {
+           case "1": //view all bookings 
+               await AllBookings();
+               break;
+           case "2": //find booking by customer name
+               await SearchBookingsByName();
+               break;
+           case "3": //edit booking
+               await UpdateBooking();
+               break;
+           case "4":
+               _menuState = MenuStateEnum.Main;
+               break;
+        }
+        
+    }
+
+    private async Task AllBookings()
+    {
+        List<BookingsView> AllBookings = await _queryHandler.BookingViewQueries.GetAllBookings();
+        foreach (var bookings in AllBookings)
+        {
+            Console.Write("Bookings id: " + bookings.BookingsId + "  |  ");
+            Console.Write("StartDate: " + bookings.StartDate + "  |  ");
+            Console.Write("EndDate: " + bookings.EndDate + "  |  ");
+            Console.Write("Status: " + bookings.Status + "  |  ");
+            Console.Write("Addons: " + bookings.Addons + "  |  ");
+            Console.Write("Room size: " + bookings.EndDate + "  |  ");
+            Console.Write("Room number: " + bookings.Status + "  |  ");
+            Console.Write("Customer name: " + bookings.CustomerName + "  |  ");
+            Console.WriteLine("Price: " + bookings.Price + "  |  ");
+        }
+    }
+
+    private async Task SearchBookingsByName()
+    {
+        
+        Console.WriteLine("Please enter the name you want to search for:");
+        string? inputName = Console.ReadLine(); 
+
+        if (string.IsNullOrWhiteSpace(inputName))
+        {
+            Console.WriteLine("Invalid input. Please provide a valid name.");
+            return;
+        }
+
+        try
+        {
+            List<BookingsView> searchResults = await _queryHandler.BookingViewQueries.SearchBookingByName(inputName);
+
+            if (searchResults.Count == 0)
+            {
+                Console.WriteLine($"No bookings found for the name: {inputName}");
+            }
+            else
+            {
+                Console.WriteLine($"Bookings found for the name: {inputName}");
+                foreach (var booking in searchResults)
+                {
+                    Console.WriteLine($"Booking ID: {booking.BookingsId}, " +
+                                      $"Start Date: {booking.StartDate}, " +
+                                      $"End Date: {booking.EndDate}, " +
+                                      $"Status: {booking.Status}, " +
+                                      $"Room Size: {booking.Size}, " +
+                                      $"Room Number: {booking.RoomNumber}, " +
+                                      $"Customer Name: {booking.CustomerName}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred while searching for bookings: {ex.Message}");
+        }
+    }
+
+    private async Task UpdateBooking()
+    {
+       Console.WriteLine("Please enter the booking ID you want to update");
+       if (int.TryParse(GetInput(), out int bookingId))
+       {
+           Console.WriteLine("Enter new starting date (yyyy-MM-dd) or leave blank for no change:");
+           string? startDateInput = Console.ReadLine();
+           DateTime? start_date = null;
+           if (!string.IsNullOrWhiteSpace(startDateInput) && DateTime.TryParse(startDateInput, out DateTime parsedStartDate))
+           {
+               start_date = parsedStartDate;
+           }
+           
+           Console.WriteLine("Enter new ending date (yyyy-MM-dd) or leave blank for no change:");
+           string? endDateInput = Console.ReadLine();
+           DateTime? end_date = null;
+           if (!string.IsNullOrWhiteSpace(endDateInput) && DateTime.TryParse(endDateInput, out DateTime parsedEndDate))
+           {
+               end_date = parsedEndDate;
+           }
+           
+           Console.WriteLine("Enter new status (leave blank for no input)");
+           string? status = Console.ReadLine();
+           if (string.IsNullOrWhiteSpace(status)) status = null;
+           
+           await _queryHandler.BookingQueries.UpdateBooking(bookingId, start_date, end_date, status);
+       }
+       else
+       {
+           Console.WriteLine("invalid booking id");
+       }
+       
+    }
+    
+    /*
+     *  BookingMenuHandler gjordes på plats i skolan, alla i gruppen sammarbetade vid samma dator för att få klart
+     *  innan presentation.
+     */
+    private async Task BookingMenuHandler() 
+    {
+        Console.WriteLine("we have hotels in these cities Innsbruck, Chamonix, Aspen, Zermatt, Hakuba"); //i vas lazy on a friday :)
         switch (GetInput())
         {
             case "1": //search by city
@@ -253,6 +378,7 @@ public class Menu
                 foreach (var hotel in hotels)
                 {
                     Console.Write("hotel id: " + hotel.HotelId + "  |  ");
+                    Console.Write("hotel name: " + hotel.HotelNames + "  |  ");
                     Console.Write("rating: " + hotel.Rating + "  |  ");
                     Console.Write("distance to ski: " + hotel.DistanceToSkiSlope + "  |  ");
                     Console.Write("distance to center: " + hotel.DistanceToTownCenter + "  |  ");
@@ -263,6 +389,19 @@ public class Menu
                 }
                 break;
             case "2": //search by distance to ski slope
+                List<HotelAndFeatures> hotels1 = await _queryHandler.HotelAndFeaturesQueries.SearchByDistance("distance_to_ski_slope", GetInput("enter distance in kilometers: "));
+                foreach (var hotel in hotels1)
+                {
+                    Console.Write("hotel id: " + hotel.HotelId + "  |  ");
+                    Console.Write("hotel name: " + hotel.HotelNames + "  |  ");
+                    Console.Write("rating: " + hotel.Rating + "  |  ");
+                    Console.Write("distance to ski: " + hotel.DistanceToSkiSlope + "  |  ");
+                    Console.Write("distance to center: " + hotel.DistanceToTownCenter + "  |  ");
+                    Console.Write("feature: " + hotel.Feature + "  |  ");
+                    Console.Write("street address: " + hotel.StreetName + "  |  ");
+                    Console.Write("city: " + hotel.City + "  |  ");
+                    Console.WriteLine("country: " + hotel.Country);
+                }
                 break;
             case "3"://return
                 _menuState = MenuStateEnum.Main;
@@ -393,14 +532,44 @@ public class Menu
         switch (GetInput())
         {
             case "1": //damien testing
-                await _queryHandler.CustomerQueries.AllCustomers(); 
-              // SEARCH: await _queryHandler.CustomerQueries.SearchCustomer("name", "Thom");
-             // INSERT: await _queryHandler.CustomerQueries.InsertCustomer("David maguy", "Davidmaguy123@gmail.com", "070-418-9995", 1999);
-             // DELETE: await _queryHandler.CustomerQueries.DeleteCustomer(201);
-             // UPDATE: await _queryHandler.CustomerQueries.UpdateCustomer(200, name: "Stinky Carl", email: "orb@gmail.com");
+                /*string searchName = "Lainey Tuffield"; 
+                List<BookingsView> searchBookingsName = await _queryHandler.BookingViewQueries.SearchBookingByName(searchName);
+
+                if (searchBookingsName.Count == 0)
+                {
+                    Console.WriteLine("No bookings found for the specified customer name.");
+                }
+                else
+                {
+                    foreach (var bookings in searchBookingsName)
+                    {
+                        Console.Write("Bookings id: " + bookings.BookingsId + "  |  ");
+                        Console.Write("Start Date: " + bookings.StartDate + "  |  ");
+                        Console.Write("End Date: " + bookings.EndDate + "  |  ");
+                        Console.Write("Status: " + bookings.Status + "  |  ");
+                        Console.Write("Room size: " + bookings.Size + "  |  ");
+                        Console.WriteLine("Room number: " + bookings.RoomNumber);
+                    }
+                }*/
+                    
+                /* List<BookingsView> AllBookings = await _queryHandler.BookingViewQueries.GetAllBookings();
+                 foreach (var bookings in allBookings)
+                 {
+                     Console.Write("Bookings id: " + bookings.BookingsId + "  |  ");
+                     Console.Write("StartDate: " + bookings.StartDate + "  |  ");
+                     Console.Write("Room size: " + bookings.EndDate + "  |  ");
+                     Console.WriteLine("Room number: " + bookings.Status + "  |  ");
+                 } */
+                // UPDATE BOOKING: await _queryHandler.BookingQueries.UpdateBooking(3, new DateTime(2023, 12, 02), new DateTime(2023, 12, 08), "active");
+                // ALL: await _queryHandler.CustomerQueries.AllCustomers(); 
+                // SEARCH: await _queryHandler.CustomerQueries.SearchCustomer("name", "Thom");
+                // INSERT: await _queryHandler.CustomerQueries.InsertCustomer("David maguy", "Davidmaguy123@gmail.com", "070-418-9995", 1999);
+                // DELETE: await _queryHandler.CustomerQueries.DeleteCustomer(201);
+                // UPDATE: await _queryHandler.CustomerQueries.UpdateCustomer(200, name: "Stinky Carl", email: "orb@gmail.com");
               
                 break;
             case "2": //david testing
+                await ResultMenuHandler(await _queryHandler.TestQueries.TestQuery());
                 _menuState = MenuStateEnum.ResultMenu;
                 break;
             case "3": //kasper testing
@@ -421,47 +590,53 @@ public class Menu
         }
         
     }
-
-    private string PadBoth(string text, int totalWidth)
-    {
-        int spaces = totalWidth - text.Length;
-        int padLeft = spaces / 2 + text.Length;
-        return text.PadLeft(padLeft).PadRight(totalWidth);
-    }
+    #endregion
     
-    private async Task ResultMenuHandler()
+    private async Task ResultMenuHandler(List<Customer> customers)
     {
-        List<Customer> customers = await _queryHandler.TestQueries.TestQuery();
-
-        // foreach(var prop in customers[1].GetType().GetProperties()) {
-        //     Console.WriteLine("{0}-{1}", prop.Name, prop.Name.GetType());
-        // }
+        
+        //MenuHelpers.CalculateMaxWidthOfAllProperties(customers); // test
 
 
-        //Console.ReadLine();
+
+        Console.ReadLine();
         int maxIdLength = customers.Max(c => c.Id.ToString().Length);
         int maxNameLength = customers.Max(c => (c.Name ?? "").Length);
         int maxEmailLength = customers.Max(c => (c.Email ?? "").Length);
         int maxPhonenumberLength = customers.Max(c => (c.PhoneNumber ?? "").Length);
         int maxBirthyearLength = customers.Max(c => c.Birthyear.ToString().Length);
-        int extraTextLength = "Id:   |  Name:   |  Email:   |  PhoneNumber:   |  BirthYear:   |".Length;
+        int extraTextLength = "|  Id:   |  Name:   |  Email:   |  PhoneNumber:   |  BirthYear:   |".Length;
         int totalWidth = maxIdLength + maxNameLength + maxEmailLength + maxPhonenumberLength + maxBirthyearLength + extraTextLength;
         int customersStart = 0;
         int customersEnd = 10;
         ConsoleKeyInfo key;
-        bool test = true;
         int row = 0;
         Console.Clear();
-        Console.WriteLine(new string('-', totalWidth));
-        Console.WriteLine("|" + PadBoth("viewing customers", totalWidth - 2) + "|");
-        Console.WriteLine(new string('-', totalWidth));
+
+        string[] headerStrings = MenuHelpers.CreateHeaderStrings("Contrary to popular belief, Lorem Ipsum is not " +
+                                                                 "simply random text. It has roots in a piece of " +
+                                                                 "classical Latin literature from 45 BC, making " +
+                                                                 "it over 2000 years old. Richard McClintock, a " +
+                                                                 "Latin professor at Hampden-Sydney College in Virginia, " +
+                                                                 "looked up one of the more obscure Latin words, " +
+                                                                 "consectetur, from a Lorem Ipsum passage, and going " +
+                                                                 "through the cites of the word in classical literature, " +
+                                                                 "discovered the undoubtable source. Lorem Ipsum comes from " +
+                                                                 "sections 1.10.32 and 1.10.33 of de Finibus Bonorum et Malorum " +
+                                                                 "(The Extremes of Good and Evil) by Cicero, written in 45 BC. This book " +
+                                                                 "is a treatise on the theory of ethics, very popular during the Renaissance. " +
+                                                                 "The first line of Lorem Ipsum, Lorem ipsum dolor sit amet.., " +
+                                                                 "comes from a line in section 1.10.32", totalWidth);
+
+        foreach (var text in headerStrings)
+        {
+            Console.WriteLine(text);
+        }
         
         (int left, int top) = Console.GetCursorPosition();
         
-        
-
         Console.CursorVisible = false;
-        
+        bool test = true;
         while (test)
         {
             Console.SetCursorPosition(left, top);
@@ -475,7 +650,7 @@ public class Menu
                 if (i == row)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"Id: {customer.Id.ToString().PadRight(maxIdLength)}  |  " +
+                    Console.WriteLine($"|  ID: {customer.Id.ToString().PadRight(maxIdLength)}  |  " +
                                       $"Name: {(customer.Name ?? "null").PadRight(maxNameLength)}  |  " +
                                       $"Email: {(customer.Email ?? "null").PadRight(maxEmailLength)}  |  " +
                                       $"PhoneNumber: {(customer.PhoneNumber ?? "null").PadRight(maxPhonenumberLength)}  |  " +
@@ -483,56 +658,57 @@ public class Menu
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    Console.Write("Id: ");
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    Console.Write(customer.Id.ToString().PadRight(maxIdLength));
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    Console.Write("  |  ");
+                    ConsoleColor color1 = ConsoleColor.DarkMagenta;
+                    ConsoleColor color2 = ConsoleColor.DarkCyan;
                     
-                    Console.Write("Name: ");
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    Console.Write((customer.Name ?? "null").PadRight(maxNameLength));
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    Console.Write("  |  ");
                     
-                    Console.Write("Email: ");
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    Console.Write((customer.Email ?? "null").PadRight(maxEmailLength));
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    Console.Write("  |  ");
+                    Console.Write("|  ");
                     
-                    Console.Write("PhoneNumber: ");
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    Console.Write((customer.PhoneNumber ?? "null").PadRight(maxPhonenumberLength));
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    Console.Write("  |  ");
+                    MenuHelpers.PrintWithColor(customer.Id.ToString().PadRight(maxIdLength), 
+                        color2, 
+                        "ID: ",
+                        color1,
+                        "  |  ",
+                        color1);
                     
-                    Console.Write("BirthYear: ");
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    Console.Write(customer.Birthyear.ToString().PadRight(maxBirthyearLength));
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    MenuHelpers.PrintWithColor((customer.Name ?? "null").PadRight(maxNameLength), 
+                        color2,
+                        "Name: ",
+                        color1,
+                        "  |  ",
+                        color1);
+
+                    MenuHelpers.PrintWithColor((customer.Email ?? "null").PadRight(maxEmailLength),
+                        color2,
+                        "Email: ",
+                        color1,
+                        "  |  ",
+                        color1);
+
+                    MenuHelpers.PrintWithColor((customer.PhoneNumber ?? "null").PadRight(maxPhonenumberLength),
+                        color2,
+                        "PhoneNumber: ",
+                        color1,
+                        "  |  ",
+                        color1);
+
+                    MenuHelpers.PrintWithColor(customer.Birthyear.ToString().PadRight(maxBirthyearLength),
+                        color2,
+                        "BirthYear: ",
+                        color1);
+                    
                     Console.WriteLine("  |  ");
                 }
             }
             Console.ResetColor();
-            Console.WriteLine(new string('-', totalWidth));
-            if (_menuOptions.TryGetValue(_menuState, out string[]? options))
+
+            string[] optionStrings = MenuHelpers.createOptionFooterStrings(_menuOptions[_menuState].ToList(), totalWidth);
+
+            foreach (var text in optionStrings)
             {
-                string optionsText = "";
-                foreach (var option in options)
-                {
-                    optionsText = optionsText + option + "   ";
-                }
-                Console.WriteLine("|" + PadBoth(optionsText, totalWidth - 2) + "|");
+                Console.WriteLine(text);
             }
-            else
-            {
-                Console.WriteLine("no options for this state");
-            }
-            Console.WriteLine(new string('-', totalWidth));
-            
-            
+   
             key = Console.ReadKey(true);
             
             switch (key.Key)
@@ -546,7 +722,7 @@ public class Menu
                     }
                     else
                     {
-                        if (row >= customers.Count - 5)
+                        if (row >= customers.Count - 6)
                         {
                             customersStart = customers.Count - 10;
                             customersEnd = customers.Count;
