@@ -364,7 +364,11 @@ public class Menu
        
     }
     
-    private async Task BookingMenuHandler()
+    /*
+     *  BookingMenuHandler gjordes på plats i skolan, alla i gruppen sammarbetade vid samma dator för att få klart
+     *  innan presentation.
+     */
+    private async Task BookingMenuHandler() 
     {
         Console.WriteLine("we have hotels in these cities Innsbruck, Chamonix, Aspen, Zermatt, Hakuba"); //i vas lazy on a friday :)
         switch (GetInput())
